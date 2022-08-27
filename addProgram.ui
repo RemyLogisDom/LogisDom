@@ -1,0 +1,23 @@
+<ui version="4.0" >
+ <class>addProgram</class>
+ <widget class="QDialog" name="addProgram" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Add Weekly Program</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../onewire.qrc" >:/images/images/kfm_home.png</iconset>
+  </property>
+ </widget>
+ <resources>
+  <include location="../onewire.qrc" />
+ </resources>
+ <connections/>
+</ui>

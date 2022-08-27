@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>alarmwarn</class>
+ <widget class="QWidget" name="alarmwarn">
+  <property name="modal" stdset="0">
+   <bool>false</bool>
+  </property>
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>378</width>
+    <height>290</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Alarm</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="onewire.qrc">
+    <normaloff>:/images/images/kfm_home.png</normaloff>:/images/images/kfm_home.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="errortab">
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="widget">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="boutonsilence">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="onewire.qrc">
+       <normaloff>:/images/images/speaker_on.png</normaloff>:/images/images/speaker_on.png</iconset>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="onewire.qrc"/>
+ </resources>
+ <connections/>
+</ui>

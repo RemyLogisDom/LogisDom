@@ -1,0 +1,26 @@
+<ui version="4.0" >
+ <class>stdui</class>
+ <widget class="QDialog" name="stdui" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>383</width>
+    <height>264</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Add Icons</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../onewire.qrc" >:/images/images/kfm_home.png</iconset>
+  </property>
+  <property name="modal" >
+   <bool>false</bool>
+  </property>
+ </widget>
+ <resources>
+  <include location="../onewire.qrc" />
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,282 @@
+﻿    Version = "2.205 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Mai 2022";
+    VersionHistory = " \
+a faire\
+Nombre de ligne Max apres recompilation tableau\
+format heure data file UTC\
+calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\
+bad link si pas de capteur selectionné si on met seulement mode de déclenchement en lien\
+    Version 2.205\
+        - correctif envoi email authentifié\
+        Version 2.112b\
+        - add to chauffageunit.cpp  VanneDevice->addFamily(familyeoA52001)\
+    Version 2.112\
+        - Modif interface.h pour modbus\
+    Version 2.111b\
+        - Ajout resize PNG Height & Width\
+    Version 2.111\
+        - Remise temp sleep 200 pour modbus\
+    Version 2.108\
+        - Ajout unsigned option pour desResol\
+    Version 2.105\
+        - Mise en place plugin HA7Net et IRTrans\
+    Version 2.104\
+        - nouveau serveur meteo\
+    Version 2.101\
+        - correctif Temperature negative DS2438\
+        - log connection tcp\
+    Version 2.011\
+        - Rename interface\
+        - Max Value ModBus et lecture delai variable\
+    Version 2.007\
+        - Copy Paste png\
+    Version 2.004\
+        - send SMS free\
+    Version 2.004\
+        - modif Switch\
+        - modif sequence FIFO HA7S\
+    Version 2.003\
+        - save config on change option\
+    Version 2.002\
+        - nouveau module meteo suite arreter weather.com\
+    Version 2.001\
+        - curve.cpp QwtWeedingCurveFitter\
+        - update envoi email en thread et ajout SSL\
+    Version 1.912\
+        - modification timeout Teleinfo a 60s et slot Qt::QueuedConnection connection\
+        - compilation Raspberry\
+        - modification M-Bus, ajout sleep(1)\
+        - modification TeleInfo dataNotValis quand TCP ok, mais panne EDF\
+    Version 1.911\
+        - ajout background color, web view abandonné, ouverture page html dans explorateur par defaut\
+        - correctif iconarea deplacement, ajout text html, gestion des fonts\
+    Version 1.910\
+        - ajout rotation html picture\
+    Version 1.909\
+        - ajout eoD20112\
+    Version 1.904\
+        - ajout mode standar pour TéléInfo\
+    Version 1.902\
+        - correctif interval un mois et ajout un an\
+        - correctif weather.ccp calcul validité de date\
+        - Ajout EnOcean Temp + Humidité A5-04-xx\
+        - Ajout EnOcean Switch 1 et 2 voies D2-01-0F D2-01-12\
+     Version 1.901\
+        - reprise code oublié de 1.705 et 1.704\
+     Version 1.810\
+         - Ajout EnOcean\
+         - Import Export page graphique\
+         - Generateur pages html\
+     Version 1.705\
+         - Lecture MBus specifique a chaque device\
+     Version 1.704\
+         - ajouter données instantanée dans mbus\
+     Version 1.703\
+     - correctif vmc.cpp quand y a pas de programmation temporelle\
+     - correctif DS2413 ON et OFF commandes\
+     Version 1.612\
+         - Ajout 3A-2100H comme clone du DS2413 \
+     Version 1.610\
+         - Correctif DS2408 utilisé en Decimal \
+     Version 1.606\
+         - ajout fonction replace= dans webparse \
+         - ajout fonction LSumRomID, limite haute de prise en compte dans la calcul \
+     Version 1.605\
+         - correctif RPS2 separateur decimal \
+         - ajout always on top palette \
+         - Ajout et correctif ds2423 Max Delta \
+     Version 1.604\
+         - correctif UTF-8 encoding source files \
+     Version 1.504\
+         - correctif point et virgule module calcul solaire \
+     Version 1.502\
+         - correctif MAX31850\
+         - format code source UTF8\
+     Version 1.501\
+         - ajout filter pasring html\
+    Version 1.431\
+        - correctif pasring html\
+        - ajout fonction AND OR XOR LEFT RIGHT\
+    Version 1.430\
+        - Gestion capteur HS\
+        - Gestion declenchement ouvert/fermé progressif\
+    Version 1.407\
+        - Gestion declenchement ouvert/fermé progressif\
+        - correctif compteur DS2423 en cas de retour a zéro après debranchement \
+    Version 1.406\
+       - Ajout fonction TemperatureHi, TemperatureLow, Humidity, WindSpeed, WindDirection\
+       - Gestion module lumiere LED\
+       - Correctif HA7S module LCD 1 Wire\
+       - Auto save en mode Real Time\
+     Version 1.404\
+        - Déclenchement enregistrement de Valeur si erreur\
+    Version 1.403\
+       - correctif modbus et gestion des valeur négative et nombre réel pour consigne dégivrage PAC\
+       - ajout envoi mail authentifié / SSL\
+    Version 1.326\
+    - correctif thread\
+    Version 1.325\
+        - correctif doublons dans les fichier zip après recompilation\
+        - doublons dans les zip apres recompil\
+    Version 1.324 / \n\
+        - correctif duree 1 mois\
+        - correctif setTraffic en signals/slots\
+    Version 1.323 / \n\
+        - histogramme a partir des tableaux\
+        - bug signal/slot finished HA7Net source plantage intemittent\
+    Version 1.322 / \n\
+        - modificitation pour les tableaux\
+        - ajout assign main value pour devModbus\
+    Version 1.321 / \n\
+        - correction bug SIG SEG FAULT formula.cpp line 611	ui.textBrowserResult->append(calcth->textBrowserResult);\
+        - fonction YearBefore, MonthBefore\
+        - ajout du parametre durée pour MeanRomID, MaxRomID, MinRomID, SumRomID, CountRomID, DataCount\
+        - ajout Dupliquer avec formule\
+        - Gestion DS2406 TO92\
+    Version 1.305 / \n\
+        - fonction Hysteresis et CountRomID\
+        - prise en charge des signes négatif à l intérieur des fonctions, plus besoins de mettre des paremthèses\
+        - croix pour les graphiques\
+        - coloration syntaxique formules\
+        - tris dans la liste de choix des capteurs\
+        - integration deltaSol MX\
+        - enregistrement config en txt\
+        - bug sauvegarde invertion DS2413\
+        - timeout de recherche du HA7net passé de 5 à 20 secondes pour que les recherche du un bus contenant beaucoup de capteurs se déroulent normalement\
+    Version 1.248 / \n\
+        - correction bug slave Mobdus TCP\
+    Version 1.241 / \n\
+        - correction bug reprocess avec commentaires dans les formules\n\
+    Version 1.240 / \n\
+        - possibilité commentaire dans les formules avec apostrophe en début de ligne\n\
+        - html remover\n\
+        - supression master\n\
+        - fraction pour devmodbus\n\
+        - Déclenchement gestion Ouvert/Fermé et plus de VMC\n\
+    Version 1.231 / \n\
+        - gestion appronfondie DS2450\n\
+        - Couleur texte et valeur\n\
+        - DS2413 gestion en décimal\n\
+        - fraction pour ax+b\n\
+    Version 1.222 / \n\
+        - Multiplexeur pour le M3 \n\
+        - HA7net/Meteo suppression QHttp \n\
+        - DS2413 et DS2408 suppression valeur text custom car maintenant dispo pour chaque capteur \n\
+    Version 1.21x / \n\
+        - repertoire dat, zip et backup custum\
+        - coef courbe dans la légende\
+        - récup info EDF tarif du lendemain\
+        - Affection valeur texte pour capteur\
+        - page weqwtb perso\
+        - copy RomID or Name to clipboard\
+        - correctif lecture M-Bus, delay search et lecture\
+        - Temps conversion HA7Net fourni par le capteur\
+        - Nouvelles fonction pour les capteur virtuels : Minute, Hour, DayOfWeek, MonthOfYear, Year\
+    Version 1.152 / \n\
+        - Modbus TCP et RTU\
+        - Icon mouse resize, duplicate, selection multiple, icon tools\
+        - Formule signe different\
+    Version 1.149 / \n\
+        - Test Modbus\
+    Version 1.143 / \n\
+        - Ajout AutoSave\
+        - Modif save config Daily currentIndex + currentText\
+    Version 1.142 / \n\
+        - correctif bug remote Blocking connection\
+    Version 1.141 / \n\
+        - Correctif bug connect(ui.pushButtonCalculate... en double\
+        - Backup config file\
+    Version 1.140 / \n\
+        - Ajout possibilité changement texte Marche/Arret DS2408, DS2413, Switch MultiGest, X10, PclBus\
+        - Amélioration esthétique layout\
+        - Formule directement dans les switch\
+    Version 1.137 / \n\
+        - correctif connection http origine broken pipe ?\
+    Version 1.136 / \n\
+            Qt 4.7.4 Qwt 6.0.1\n\
+    Version 1.136 / \n\
+        - modif bug update png graphique\n\
+    Version 1.118 / \n\
+        - remise en place tcp non thread\n\
+        - config mÃ©tÃ©o custum\n\
+        - M-Bus\
+    Version 1.109 / Mars 2011\n\
+        - Correction bug toNumeric avec un RomID sans lettre\
+    Version 1.106 / Février 2011\n\
+        - Ajout TeleIno PTEC et DEMAIN\n\
+        - Correctif gestion deconnection TeleInfo\
+        - Ajout delai de recherche automatique\
+        - Option de chargement initial des tableaux\
+        - Option calcul automatique VD\
+        - Control CRC sur les RomID Dallas\
+    Version 1.104 / Janvier 2011\n\
+        - correctif bug capteur virtuel qui se bloquent\n\
+    Version 1.101a / Janvier 2010\n\
+        - correctif chargement simulatnÃ© de donnÃ©e\n\
+        - correction bug unicode chargement fichier config\n\
+        - correction bug recherche premiÃ¨re valeur de la liste\n\
+        - Valeurs dans la lÃ©gende des graphiques quand on appuie sur Ctrl et Shift\n\
+    Version 1.053a / Decembre 2010\n\
+        - Generate png en thread eliminÃ© car aucun avantage\n\
+        - Png generée un fichier chaque seconde\n\
+        - correction bugs 1.52\n\
+    Version 1.052 / Decembre 2010\n\
+        - HA7S interface socket TCP reconstruit en thread\n\
+        - HA7Net interface Http reconstruit en thread\n\
+        - Correction bug mainvalue update Graphique et Buffer onewiredevice\n\
+        - Tweak mise Ã  jour graphic tabwidget size au dÃ©marrage pour generation png\n\
+        - Generate png en thread\n\
+    Version 1.051 / Decembre 2010\n\
+        - MultiGest interface socket TCP reconstruit en thread\n\
+        - Onewire device dataloading reconstruit en thread\n\
+        - png generation refresh bug correction\n\
+        - ajout Regul RESOL 0x7321 0x7326 temporaire\n\
+        - Calcul statistique sur donnÃ©es globales et non plus avec une rÃ©solution Ã  la minute\n\
+        - Calcul statistique, prise en charge des manques des donnÃ©es Ã©ventuels ... Ã  suivre\n\
+        - Correction defaut valeur nÃ©gative = 0 pour les changement icones\n\
+        - Modification indication couleur lÃ©gendes des graphiques\n\
+        - Ajout Cacher/Afficher barre outils pour les graphiques dans la palette\n\
+        - Calcul Solaire correction bug qround pour puissance totale pscal\n\
+        - Migration Qwt6.0 et Qt4.7.0\n\
+\n\
+\n\
+	";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
