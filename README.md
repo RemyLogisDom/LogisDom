@@ -1,4 +1,6 @@
 # LogisDom
+![Logo LogisDom](https://user-images.githubusercontent.com/93469884/198893669-c48d0f25-6a75-4c48-a8e3-13cca6277102.png)
+
 
 LogisDom is a WYSIWYG software for home supervision and control.
 
@@ -8,6 +10,9 @@ It is mainly based on 1 wire, ModBus, TeleInfo. Other communication protocols ar
 
 All these protocols are driven via ethernet interface, USB and COM port are not the prefered connections even if it could be implemented. Only EnOcean can be used via USB port.
 
+LogisDom stores all the sensors values, can show graphics, perform calculations to operate automation, for example starting the charge of a electric car when photovoltaic pannels are giving enough power and when the battery level is high enough, or manage a heat pump for proper room temperature control.
+
+LogisDom can run under PC Windows & Linux and Rapsberry Pi.
 
 
 How to build with Qt 5.15.2
