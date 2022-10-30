@@ -1,5 +1,5 @@
-﻿    Version = "2.205 (Qt " QT_VERSION_STR ")";
-    VersionDate = "Mai 2022";
+﻿    Version = "2.209 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Septembre 2022a";
     VersionHistory = " \
 a faire\
 Nombre de ligne Max apres recompilation tableau\

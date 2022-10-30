@@ -210,6 +210,7 @@ void eoD2010F::On(bool send)
     if (!master) return;
     QString order = master->getFifoString("D2010064", romid.left(8), "");
     if (send) master->addtofifo(order);
+    getStatus();
 }
 
 
@@ -221,6 +222,7 @@ void eoD2010F::Off(bool send)
     if (!master) return;
     QString order = master->getFifoString("D2010000", romid.left(8), "");
     if (send) master->addtofifo(order);
+    getStatus();
 }
 
 

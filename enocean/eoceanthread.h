@@ -74,6 +74,7 @@ struct EOpacket
     bool learnMode = false;
 private:
     QList <FIFOStruc*> FIFO;
+    uint32_t lastDestinationID;
     QTcpSocket *socket;
     QSerialPort *serial;
     QString adress;

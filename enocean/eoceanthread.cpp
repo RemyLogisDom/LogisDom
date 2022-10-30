@@ -229,6 +229,15 @@ void eoceanthread::run()
                         send.data.append(RORG_VLD); //mytel.RORG = RORG_VLD;
                         uint8_t cmd = uint8_t(Request.mid(2, 2).toInt(&ok, 16));
                         send.data.append(cmd); //mytel.data[0] = cmd;
+                        /*
+                            CMD 0x1 - Actuator Set Output
+                            CMD 0x2 - Actuator Set Local
+                            CMD 0x3 - Actuator Status Query
+                            CMD 0x4 - Actuator Status Response
+                            CMD 0x5 - Actuator Set Measurement
+                            CMD 0x6 - Actuator Measurement Query
+                            CMD 0x7 - Actuator Measurement Response
+                        */
                         switch (cmd)
                         {
                             case 0x01 :
@@ -566,6 +575,16 @@ void eoceanthread::processData(const EOpacket &packet)
     QString str;
     QString data_Str;
     uint8_t rorg = packet.data.at(0);
+    if (packet.Type == PACKET_RESPONSE) {
+        QByteArray data;
+        for (int n=0; n<packet.data.length(); n++) data.append(packet.data.at(n));
+        QString deviceID = QString("%1").arg(quint32(lastDestinationID), 8, 16, QChar('0')).toUpper();
+        emit(logThis("PACKET_RESPONSE : " + data.toHex().toUpper() + " for " + QString(deviceID)));
+        //QString deviceProfile = QString("%2").arg(uchar(rorg), 2, 16, QChar('0')).toUpper();
+        //QString RomID = deviceID + deviceProfile + familyEOcean;
+        //emit(deviceReturn(RomID, scratchpad));
+    }
+    if (packet.Type == PACKET_RADIO) {
     switch (rorg)
     {
         case RORG_4BS:
@@ -638,6 +657,15 @@ void eoceanthread::processData(const EOpacket &packet)
         case RORG_VLD:
         { // D2 046080 05164727 00
             uint8_t cmd = uint8_t(packet.data.at(1));
+/*
+    CMD 0x1 - Actuator Set Output
+    CMD 0x2 - Actuator Set Local
+    CMD 0x3 - Actuator Status Query
+    CMD 0x4 - Actuator Status Response
+    CMD 0x5 - Actuator Set Measurement
+    CMD 0x6 - Actuator Measurement Query
+    CMD 0x7 - Actuator Measurement Response
+*/
             switch (cmd)
             {
                 case 0x01 :
@@ -707,6 +735,7 @@ void eoceanthread::processData(const EOpacket &packet)
         default:
         {
         } break;
+    }
     }
 }
 
@@ -790,7 +819,7 @@ void eoceanthread::sendESP3(EOpacket &packet)
 }
 
 
-
+// 55 00 01 00 02 65 00 00
 
 bool eoceanthread::decodeESP3(QByteArray &buf, EOpacket &packet)
 {
