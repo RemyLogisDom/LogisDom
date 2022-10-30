@@ -4,13 +4,13 @@
 
 LogisDom is a WYSIWYG software for home supervision and control.
 
-It is not a domotic toy, it is more oriented to automation for multi energy control.
+It is like a domotic software, but more oriented for automation and specially multi energy control within a house.
 
 It is mainly based on 1 wire, ModBus, TeleInfo. Other communication protocols are also supported, like EnOcean and M-Bus.
 
 All these protocols are driven via ethernet interface, USB and COM port are not the prefered connections even if it could be implemented. Only EnOcean can be used via USB port.
 
-LogisDom stores all the sensors values, can show graphics, perform calculations to operate automation, for example starting the charge of a electric car when photovoltaic pannels are giving enough power and when the battery level is high enough, or manage a heat pump for proper room temperature control.
+LogisDom displays and stores all the sensors values with complete customized GUI layout, it can show graphics, perform calculations to operate automation, for example starting the charge of a electric car when photovoltaic pannels are giving enough power and when the battery level is high enough, or manage a heat pump for proper room temperature control.
 
 LogisDom can run under PC Windows & Linux and Rapsberry Pi.
 
