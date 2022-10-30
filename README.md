@@ -6,7 +6,7 @@ It is not a domotic toy, it is more oriented to automation for multi energy cont
 
 It is mainly based on 1 wire, ModBus, TeleInfo. Other communication protocols are also supported, like EnOcean and M-Bus.
 
-All these protocol are driven via ethernet interface, USB and COM port are not the prefered connections even if it could be implemented. Only EnOcean can be used via USB port.
+All these protocols are driven via ethernet interface, USB and COM port are not the prefered connections even if it could be implemented. Only EnOcean can be used via USB port.
 
 
 
