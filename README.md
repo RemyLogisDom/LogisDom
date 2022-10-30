@@ -12,7 +12,7 @@ All these protocols are driven via ethernet interface, USB and COM port are not 
 
 LogisDom displays and stores all the sensors values with complete customized GUI layout, it can show graphics, perform calculations to operate automation, for example starting the charge of a electric car when photovoltaic pannels are giving enough power and when the battery level is high enough, or manage a heat pump for proper room temperature control.
 
-![examples here](https://remylogisdom.github.io)
+examples here https://remylogisdom.github.io
 
 LogisDom can run under PC Windows & Linux and Rapsberry Pi.
 
