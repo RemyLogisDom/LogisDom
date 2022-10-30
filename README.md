@@ -25,10 +25,10 @@ In your Qt build project (for example /LogisDom/build-LogisDom-Desktop_Qt_5_15_2
 
 you need to copy the Quazip source code in a folder named quazip-0.7.3, and comppile it
 
-For Qwt is it in a folder named qwt-6.2.0
+For Qwt it has to be copied in a folder named qwt-6.2.0
 
-compiled library file must be stored in a folder named lib
+compiled library file must be stored in a folder named lib under Qt build folder.
 
-You can do differently as you wish by modifying the LogisDom.pro file.
+You can do differently by modifying the LogisDom.pro file.
 
-LogisDom should compile straight forward like this.
+LogisDom should compile straight forward doing like this.
