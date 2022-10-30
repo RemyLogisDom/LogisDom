@@ -1,6 +1,6 @@
 ﻿/****************************************************************************
 **
-** Copyright (C) 2019 Remy CARISIO.
+** Copyright (C) 2022 Remy CARISIO.
 **
 ** This file is part of the LogisDom project from Remy CARISIO.
 ** remy.carisio@orange.fr   http://logisdom.fr
