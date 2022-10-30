@@ -1,5 +1,14 @@
 # LogisDom
 
+LogisDom is a WYSIWYG software for home supervision and control.
+
+It is not a domotic toy, it is more oriented to automation for multi energy control.
+
+It is mainly based on 1 wire, ModBus, TeleInfo. Other communication protocols are also supported, like EnOcean and M-Bus.
+
+All these protocol are driven via ethernet interface, USB and COM port are not the prefered connections even if it could be implemented. Only EnOcean can be used via USB port.
+
+
 
 How to build with Qt 5.15.2
 
