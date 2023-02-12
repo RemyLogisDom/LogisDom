@@ -518,7 +518,7 @@ bool modbusthread::get(QTcpSocket &Socket, const unsigned char *request, const u
 
 
 
-bool modbusthread::write(QTcpSocket &Socket, const unsigned char *request, const unsigned int inLen, qint16 &value)
+bool modbusthread::write(QTcpSocket &Socket, const unsigned char *request, const unsigned int inLen, qint16 &)
 {
     QString hex_request;
     for (quint16 n=0; n<inLen; n++) hex_request += QString("%1 ").arg(uchar(request[n]), 2, 16, QChar('0')).toUpper();

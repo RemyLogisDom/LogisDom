@@ -124,7 +124,7 @@ bool ds18b20::isTempFamily()
 void ds18b20::changealarmebasse()
 {
 	bool ok;
-	double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, Qt::Dialog, parent);
+    double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, parent);
 	if (ok)
 	{
 		TalarmB = T;
@@ -140,7 +140,7 @@ void ds18b20::changealarmebasse()
 void ds18b20::changealarmehaute()
 {
 	bool ok;
-	double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, Qt::Dialog, parent));
+    double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, parent));
 	if (ok)
 	{
 		TalarmH = T;
@@ -160,7 +160,7 @@ void ds18b20::changresoultion()
 	int R = 12;
 	if (resolution != 0) R = resolution - 9;
 	for (int n=0; n<maxbits; n++) items << NbitsStr(n);
-	QString Resolution = inputDialog::getItemPalette(this, textResolution, textResolution, items, R, false, &ok, Qt::Dialog, parent);
+    QString Resolution = inputDialog::getItemPalette(this, textResolution, textResolution, items, R, false, &ok, parent);
 	if (ok) R =  items.indexOf(Resolution);
 	if (R != -1)
 	{

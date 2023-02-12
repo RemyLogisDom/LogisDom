@@ -21,6 +21,7 @@ sendSmsThread::~sendSmsThread()
 void sendSmsThread::appendSms(QString sms)
 {
     dataLocker.lock();
+    qDebug() << sms;
     smsContent *newSMS = new smsContent;
     newSMS->msg = sms;
     smsList.append(newSMS);
@@ -34,26 +35,21 @@ void sendSmsThread::run()
     smsContent *sms = smsList.first();
     smsList.removeFirst();
     dataLocker.unlock();
-    if (!send(sms)) smsFailed.append(sms);
-    //QDesktopServices::openUrl(QUrl(sms));
-    bool sent = false;
-    while(!smsFailed.isEmpty() && smsList.isEmpty())
+    if (send(sms)) delete sms;
+    else smsFailed.append(sms);
+    while((!smsFailed.isEmpty()) || (!smsList.isEmpty()))
     {
-        int t = 0;
-        while(smsList.isEmpty() && (t< 60) && (!sent))
+        if (!smsList.isEmpty())
         {
-            sleep(1);
-            t++;
+            sms = smsList.first();
+            if (send(sms) || (sms->attempt > 120)) { smsList.removeFirst(); delete sms; }
         }
-        if (smsList.isEmpty())
+        else if (!smsFailed.isEmpty())
         {
             sms = smsFailed.first();
-            sent = send(sms);
-            if (sent || (sms->attempt > 120))
-            {
-                smsFailed.removeFirst();
-            }
+            if (send(sms) || (sms->attempt > 120)) { smsFailed.removeFirst(); delete sms; }
         }
+        sleep(1);
     }
 }
 
@@ -64,6 +60,7 @@ bool sendSmsThread::send(smsContent *sms)
     QNetworkRequest request(sms->msg);
     QEventLoop waitLoop;
     QNetworkAccessManager* connection = new QNetworkAccessManager();
+    emit(logMessage("try http request : " + sms->msg));
     QNetworkReply* reply = connection->get(request);
     QObject::connect(reply, SIGNAL(finished()), &waitLoop, SLOT(quit()));
     waitLoop.exec();
@@ -85,5 +82,8 @@ bool sendSmsThread::send(smsContent *sms)
         emit(logMessage(str));
         return true;
     }
+    QString str = sms->msg + tr(" message successfully send");
+    emit(logMessage(str));
+    return true;
 }
 

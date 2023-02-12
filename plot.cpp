@@ -258,7 +258,7 @@ void Plot::removecurve()
 		QString name = curve[n]->getRomID();
         curveList << parent->parent->configwin->getDeviceName(name);
 	}
-    QString curvechoise = inputDialog::getItemPalette(this, tr("Remove curve"), tr("Select curve : "), curveList, 0, false, &ok, Qt::Dialog, parent->parent);
+    QString curvechoise = inputDialog::getItemPalette(this, tr("Remove curve"), tr("Select curve : "), curveList, 0, false, &ok, parent->parent);
 	if (!ok) return;
     onewiredevice * device = parent->parent->configwin->Devicenameexist(curvechoise);
 	if (device)

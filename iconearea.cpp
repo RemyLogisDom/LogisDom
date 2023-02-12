@@ -170,7 +170,7 @@ void IconeArea::setLockedState(bool state)
 
 
 
-void IconeArea::appendconfigfile(QByteArray &configdata)
+void IconeArea::appendconfigfile(QString &configdata)
 {
     QString ReadRomID, ReadName;
     QString TAG_Begin = Icon_Begin;
@@ -191,7 +191,7 @@ void IconeArea::appendconfigfile(QByteArray &configdata)
 
 
 
-void IconeArea::readconfigfile(QByteArray &configdata)
+void IconeArea::readconfigfile(const QByteArray &configdata)
 {
     QColor color;
     QString hexColor = logisdom::getvalue("Background_Color", configdata);
@@ -1297,7 +1297,7 @@ void IconeArea::iconCopy(QString &str)
 
 void IconeArea::iconPaste(const QString &str)
 {
-	QByteArray configdata;
+    QString configdata;
 	configdata.append(str);
 	QString ReadRomID, ReadName;
 	QString TAG_Begin = Icon_Begin;
@@ -1461,7 +1461,7 @@ void IconeArea::textmenu(QLabel *label, QMouseEvent *event)
 	{
 		bool ok;
 		QFont font = label->font();
-		int f = inputDialog::getIntegerPalette(this, tr("Font size"), tr("Font size"), font.pointSize(), 1, 999, 1, &ok, Qt::Dialog, parent);
+        int f = inputDialog::getIntegerPalette(this, tr("Font size"), tr("Font size"), font.pointSize(), 1, 999, 1, &ok, parent);
 		if (!ok) return;
 		font.setPointSize(f);
 		label->setFont(font);

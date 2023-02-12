@@ -493,7 +493,7 @@ bool ok;
 	if (selection == &contextualaction0)
 	{
 		int i = inputDialog::getIntegerPalette(this, tr("Percentage Valve"),
-                        tr("Percentage Valve %1 :").arg(index.row() + 1), qRound(qreal((VannePourcent[index.row()]*qreal(99)/qreal(255)))), 0, 99, 1, &ok, Qt::Dialog, parent);
+                        tr("Percentage Valve %1 :").arg(index.row() + 1), qRound(qreal((VannePourcent[index.row()]*qreal(99)/qreal(255)))), 0, 99, 1, &ok, parent);
 		if (ok)	setVannePourCent(index.row() + 1, i);
 	}
 	if (selection == &contextualaction1)
@@ -523,7 +523,7 @@ bool ok;
 	QAction *selection = contextualmenu->exec(lineEditNbVannes.mapToGlobal(pos));
 	if (selection == contextualaction[0])
 	{
-		int i = inputDialog::getIntegerPalette(this, tr("Valves"), tr("Valve number :"), NbVannes, 1, maxvannesFTS800, 1, &ok, Qt::Dialog, parent);
+        int i = inputDialog::getIntegerPalette(this, tr("Valves"), tr("Valve number :"), NbVannes, 1, maxvannesFTS800, 1, &ok, parent);
 		if (ok)
 		{
 			setNbVannes(i);
@@ -550,7 +550,7 @@ bool ok;
 	QAction *selection = contextualmenu->exec(lineEditC1.mapToGlobal(pos));
 	if (selection == contextualaction[0])
 	{
-		int i = inputDialog::getIntegerPalette(this, tr("Code 1"), tr("Code 1 :"), Code1, 0, 99, 1, &ok, Qt::Dialog, parent);
+        int i = inputDialog::getIntegerPalette(this, tr("Code 1"), tr("Code 1 :"), Code1, 0, 99, 1, &ok, parent);
 		if (ok)
 		{
 			setCode1(i);
@@ -575,7 +575,7 @@ bool ok;
 	QAction *selection = contextualmenu->exec(lineEditC2.mapToGlobal(pos));
 	if (selection == contextualaction[0])
 	{
-		int i = inputDialog::getIntegerPalette(this, tr("Code 2"), tr("Code 2 :"), Code2, 0, 99, 1, &ok, Qt::Dialog, parent);
+        int i = inputDialog::getIntegerPalette(this, tr("Code 2"), tr("Code 2 :"), Code2, 0, 99, 1, &ok, parent);
 		if (ok)
 		{
 			setCode2(i);

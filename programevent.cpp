@@ -420,7 +420,7 @@ void ProgramEvent::supprimer()
 	QStringList items;
 	int count = PrgEvntList.count();
 	for (int n=0; n<count; n++) items << PrgEvntList[n]->Button.text();
-	QString item = inputDialog::getItemPalette(this, cstr::toStr(cstr::Remove), cstr::toStr(cstr::Remove), items, 0, false, &ok, Qt::Dialog, parent);
+    QString item = inputDialog::getItemPalette(this, cstr::toStr(cstr::Remove), cstr::toStr(cstr::Remove), items, 0, false, &ok, parent);
 	if (!ok) return;
 	if (item.isEmpty()) return;
 	for (int n=0; n<PrgEvntList.count(); n++)

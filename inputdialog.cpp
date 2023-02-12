@@ -56,13 +56,13 @@ QString inputDialog::getTextPalette(QWidget *widget, const QString &title, const
 
 
 
-QString inputDialog::getItemPalette(QWidget *widget, const QString &title, const QString &label, const QStringList &items, int current, bool editable, bool *ok, Qt::WindowFlags flags, logisdom *parent)
+QString inputDialog::getItemPalette(QWidget *widget, const QString &title, const QString &label, const QStringList &items, int current, bool editable, bool *ok, logisdom *parent)
 {
 	QString str;
 	if (!parent) return str;
 	bool hidden = parent->isPaletteHidden();
 	parent->PaletteHide(true);
-	str = getItem(widget, title, label, items, current, editable, ok, flags);
+    str = getItem(widget, title, label, items, current, editable, ok);
 	parent->PaletteHide(hidden);
 	return str;
 }
@@ -71,13 +71,13 @@ QString inputDialog::getItemPalette(QWidget *widget, const QString &title, const
 
 
 
-int inputDialog::getIntegerPalette(QWidget *widget, const QString &title, const QString &label, int value, int min, int max, int step, bool *ok, Qt::WindowFlags flags, logisdom *parent)
+int inputDialog::getIntegerPalette(QWidget *widget, const QString &title, const QString &label, int value, int min, int max, int step, bool *ok, logisdom *parent)
 {
 	int v = logisdom::NA;
 	if (!parent) return v;
 	bool hidden = parent->isPaletteHidden();
 	parent->PaletteHide(true);
-	v = getInt(widget, title, label, value, min, max, step, ok, flags);
+    v = getInt(widget, title, label, value, min, max, step, ok);
 	parent->PaletteHide(hidden);
 	return v;
 }

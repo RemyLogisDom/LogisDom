@@ -34,26 +34,20 @@ void sendMailThread::run()
         dataLocker.unlock();
         if (send(eMail)) delete eMail;
         else eMailFailed.append(eMail);
-        bool sent = false;
-        while(!eMailFailed.isEmpty() && eMailList.isEmpty())
+        while((!eMailFailed.isEmpty()) || (!eMailList.isEmpty()))
         {
-            int t = 0;
-            while(eMailList.isEmpty() && (t< 60) && (!sent))
+            if (!eMailList.isEmpty())
             {
-                sleep(1);
-                t++;
+                eMailContent *eMail = eMailList.first();
+                if (send(eMail) || (eMail->attempt > 120)) { eMailList.removeFirst(); delete eMail; }
             }
-            if (eMailList.isEmpty())
+            else if (!eMailFailed.isEmpty())
             {
                 eMailContent *eMail = eMailFailed.first();
-                sent = send(eMail);
-                if (sent || (eMail->attempt > 120))
-                {
-                    eMailFailed.removeFirst();
-                    delete eMail;
-                }
+                if (send(eMail) || (eMail->attempt > 120)) { eMailFailed.removeFirst(); delete eMail; }
             }
         }
+        sleep (10);
     }
 }
 

@@ -134,7 +134,7 @@ void plcbus::setUserCode(int code)
 	if (code == -1)
 	{
 		bool ok;
-		int c = inputDialog::getIntegerPalette(this, tr("PCLBUS User Code"), tr("User Code : "), UserCode, 0, 249, 1, &ok, Qt::Dialog, parent);
+        int c = inputDialog::getIntegerPalette(this, tr("PCLBUS User Code"), tr("User Code : "), UserCode, 0, 249, 1, &ok, parent);
 		if (!ok) return;
 		UserCode = c;
 	}
@@ -264,7 +264,7 @@ more:
 //		QString O = getOrder(fifolist[0]);
 //		int order = getorder(O);
 		QString next = fifoListNext();
-		QByteArray req;
+        QByteArray req;
 		req.append(getData(next));
 		int Command = data[2] & 0x1F;	// remove extra bit info added for request ACK
 		int feedback = data[2] & ACK_PULSE;

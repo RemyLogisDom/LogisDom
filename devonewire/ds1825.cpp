@@ -142,7 +142,7 @@ void ds1825::SetOrder(const QString &order)
 void ds1825::changealarmebasse()
 {
 	bool ok;
-	double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, Qt::Dialog, parent);
+    double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, parent);
 	if (ok)
 	{
 		TalarmB = T;
@@ -158,7 +158,7 @@ void ds1825::changealarmebasse()
 void ds1825::changealarmehaute()
 {
 	bool ok;
-	double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, Qt::Dialog, parent));
+    double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, parent));
 	if (ok)
 	{
 		TalarmH = T;
@@ -197,7 +197,7 @@ void ds1825::changresoultion()
 	int R = 12;
 	if (resolution != 0) R = resolution - 9;
 	for (int n=0; n<maxbits; n++) items << NbitsStr(n);
-	QString Resolution = inputDialog::getItemPalette(this, tr("Resolution"), tr("Resolution"), items, R, false, &ok, Qt::Dialog, parent);
+    QString Resolution = inputDialog::getItemPalette(this, tr("Resolution"), tr("Resolution"), items, R, false, &ok, parent);
 	if (ok) R =  items.indexOf(Resolution);
 	if (R != -1)
 	{

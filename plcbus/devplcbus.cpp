@@ -303,12 +303,12 @@ void devpclbus::setCode()
  	bool ok;
 	QStringList itemsHouseCode;
 	itemsHouseCode << "A" << "B" << "C" << "D" << "E" << "F" << "G" << "H" << "I" << "J" << "K" << "L" << "M" << "N" << "O" << "P";
-	QString HouseCode = inputDialog::getItemPalette(this, tr("House Code"), tr("House Code : "), itemsHouseCode, 0, false, &ok, Qt::Dialog, parent);
+    QString HouseCode = inputDialog::getItemPalette(this, tr("House Code"), tr("House Code : "), itemsHouseCode, 0, false, &ok, parent);
 	if (!ok) return;
 	if (HouseCode.isEmpty()) return;
 	QStringList itemsDevCode;
 	itemsDevCode << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9" << "10" << "11" << "12" << "13" << "14" << "15" << "16";
-	QString DevCode = inputDialog::getItemPalette(this, tr("Unit Code "), tr("Unit Code : "), itemsDevCode, 0, false, &ok, Qt::Dialog, parent);
+    QString DevCode = inputDialog::getItemPalette(this, tr("Unit Code "), tr("Unit Code : "), itemsDevCode, 0, false, &ok, parent);
 	if (!ok) return;
 	if (DevCode.isEmpty()) return;
 	setHouseCode((int)HouseCode[0].toLatin1() - 65, DevCode.toInt() - 1);

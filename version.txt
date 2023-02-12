@@ -1,11 +1,15 @@
-﻿    Version = "2.209 (Qt " QT_VERSION_STR ")";
-    VersionDate = "Septembre 2022a";
+﻿    Version = "2.302 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Février 2023";
     VersionHistory = " \
 a faire\
 Nombre de ligne Max apres recompilation tableau\
 format heure data file UTC\
 calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\
 bad link si pas de capteur selectionné si on met seulement mode de déclenchement en lien\
+    Version 2.302\
+        - Correctif sendSMS\
+    Version 2.209\
+        - tranfert github\
     Version 2.205\
         - correctif envoi email authentifié\
         Version 2.112b\

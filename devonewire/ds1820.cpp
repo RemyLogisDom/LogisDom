@@ -112,7 +112,7 @@ bool ds1820::isTempFamily()
 void ds1820::changealarmebasse()
 {
 	bool ok;
-	double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, Qt::Dialog, parent);
+    double T = inputDialog::getIntegerPalette(this, tr("Temperature"), tr("Low Alarm "), int(TalarmB), -55, 125, 1, &ok, parent);
 	if (ok)
 	{
 		TalarmB = T;
@@ -127,7 +127,7 @@ void ds1820::changealarmebasse()
 void ds1820::changealarmehaute()
 {
 	bool ok;
-	double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, Qt::Dialog, parent));
+    double T = double(inputDialog::getIntegerPalette(this, tr("Temperature"), tr("High Alarm"), int(TalarmH), -55, 125, 1, &ok, parent));
 	if (ok)
 	{
 		TalarmH = T;

@@ -158,7 +158,7 @@ void formula::reprocess()
 	}
 	else if (secs == 0)
 	{
-	    secs = inputDialog::getIntegerPalette(this, tr("Intervalle"), tr("Intervalle en minute : "), 1, 1, 999, 1, &ok, Qt::Dialog, parent);
+        secs = inputDialog::getIntegerPalette(this, tr("Intervalle"), tr("Intervalle en minute : "), 1, 1, 999, 1, &ok, parent);
         if (!ok)
         {
             ui.pushButtonReprocess->setText(startTxt);

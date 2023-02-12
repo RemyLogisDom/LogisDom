@@ -38,8 +38,8 @@ public:
 	inputDialog(QWidget *parent, Qt::WindowFlags flag);
 	~inputDialog();
     static QString getTextPalette(QWidget *widget, const QString &title, const QString &label, QLineEdit::EchoMode mode = QLineEdit::Normal, const QString &text = QString(), bool *ok = 0, logisdom *parent = nullptr);
-	static QString getItemPalette(QWidget *widget, const QString &title, const QString &label, const QStringList &items, int current = 0, bool editable = true, bool *ok = 0, Qt::WindowFlags flags = 0 , logisdom *parent = nullptr);
-	static int getIntegerPalette(QWidget *widget, const QString &title, const QString &label, int value = 0, int min = -2147483647, int max = 2147483647, int step = 1, bool *ok = 0, Qt::WindowFlags flags = 0 , logisdom *parent = nullptr);
+    static QString getItemPalette(QWidget *widget, const QString &title, const QString &label, const QStringList &items, int current = 0, bool editable = true, bool *ok = 0, logisdom *parent = nullptr);
+    static int getIntegerPalette(QWidget *widget, const QString &title, const QString &label, int value = 0, int min = -2147483647, int max = 2147483647, int step = 1, bool *ok = 0, logisdom *parent = nullptr);
 };
 
 #endif

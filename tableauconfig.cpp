@@ -143,7 +143,7 @@ tableau *tableauconfig::chooseTableau()
         messageBox::warningHide(this, cstr::toStr(cstr::MainName), tr("No charts available"), parent, QFlag(QMessageBox::AcceptRole | QMessageBox::NoIcon));
         return nullptr;
     }
-    QString chartchoise = inputDialog::getItemPalette(this, tr("Select chart "), tr("Select chart : "), chartList, 0, false, &ok, Qt::Dialog, parent);
+    QString chartchoise = inputDialog::getItemPalette(this, tr("Select chart "), tr("Select chart : "), chartList, 0, false, &ok, parent);
     if (!ok) return nullptr;
     for (int n=0; n<tableauPtArray.count(); n++)
     {

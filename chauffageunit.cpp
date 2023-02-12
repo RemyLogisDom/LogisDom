@@ -1187,7 +1187,7 @@ void ChauffageScrollArea::supprimer()
 	QStringList items;
 	int count = chauffageList.count();
 	for (int n=0; n<count; n++) items << chauffageList.itemText(n);
-	QString item = inputDialog::getItemPalette(this, cstr::toStr(cstr::Remove), cstr::toStr(cstr::Remove), items, 0, false, &ok, Qt::Dialog, parent);
+    QString item = inputDialog::getItemPalette(this, cstr::toStr(cstr::Remove), cstr::toStr(cstr::Remove), items, 0, false, &ok, parent);
 	if (!ok) return;
 	if (item.isEmpty()) return;
 	int index = chauffageList.findText(item);

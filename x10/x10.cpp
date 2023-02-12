@@ -507,7 +507,7 @@ void x10::NewModule()
 	}
 	QStringList X10type;
 	X10type << familyAM12 << familyLM12;
-	QString DevType = inputDialog::getItemPalette(this, tr("Module Type"), tr("Module Type : "), X10type, 0, false, &ok, Qt::Dialog, parent);
+    QString DevType = inputDialog::getItemPalette(this, tr("Module Type"), tr("Module Type : "), X10type, 0, false, &ok, parent);
 	if ((!ok) || DevType.isEmpty())
 	{
 		parent->PaletteHide(paletteHidden);

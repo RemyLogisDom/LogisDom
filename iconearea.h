@@ -46,8 +46,8 @@ public:
 	logisdom *parent;
 	QList <iconf*> IconList;
     QList <icont*> TextList;
-    void readconfigfile(QByteArray &configdata);
-    void appendconfigfile(QByteArray &configdata);
+    void readconfigfile(const QByteArray &configdata);
+    void appendconfigfile(QString &configdata);
     void SaveConfigStr(QString &str);
     void SaveConfigStrIconPath(QString &str);
     void SaveSelectionConfigStr(QString &str);

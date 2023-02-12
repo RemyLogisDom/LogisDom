@@ -537,7 +537,7 @@ void tableau::removeDevice()
 			deviceList << name;
 		}
 	}
-	QString devicechoise = inputDialog::getItemPalette(this, tr("Remove device"), tr("Select device : "), deviceList, 0, false, &ok, Qt::Dialog, parent);
+    QString devicechoise = inputDialog::getItemPalette(this, tr("Remove device"), tr("Select device : "), deviceList, 0, false, &ok, parent);
 	if (!ok) return;
 	onewiredevice *device = parent->configwin->Devicenameexist(devicechoise);
 	if (!device) return;

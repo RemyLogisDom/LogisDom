@@ -42,7 +42,6 @@
 #include "graphconfig.h"
 #include "iconearea.h"
 #include "iconf.h"
-#include "weathercom.h"
 #include "meteo.h"
 #include "commonstring.h"
 #include "programevent.h"
@@ -56,20 +55,17 @@
 #include "configwindow.h"
 #include "addProgram.h"
 #include "connection.h"
-#include "formula.h"
 #include "tableau.h"
 #include "errlog.h"
 #include "tableauconfig.h"
 #include "treehtmlwidget.h"
 #include "htmlbinder.h"
-#include "interval.h"
 #include "server.h"
 #include "quazip.h"
 #include "quazipfile.h"
 #include "inputdialog.h"
 #include "messagebox.h"
 #include "logisdom.h"
-#include "errno.h"
 #include "deadevice.h"
 
 
@@ -1796,7 +1792,7 @@ void logisdom::dropEvent(QDropEvent *)
 
 
 
-void logisdom::mouseDoubleClickEvent(QMouseEvent *event)
+void logisdom::mouseDoubleClickEvent(QMouseEvent *)
 {
 }
 
@@ -1928,9 +1924,9 @@ void logisdom::exportSelection()
             QuaZipFile outZipFile(&zipFile);
             if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(cfgFileName, cfgFileName)))
             {
-                    QByteArray data;
-                    data.append(str);
-                    outZipFile.write(data);
+                    //QByteArray data;
+                    //data.append(str);
+                    outZipFile.write(str.toLatin1());
                     outZipFile.close();
             }
             QStringList icons;
@@ -1997,9 +1993,9 @@ void logisdom::exportPage()
             QuaZipFile outZipFile(&zipFile);
             if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(cfgFileName, cfgFileName)))
             {
-                    QByteArray data;
+                    QString data;
                     data.append(str);
-                    outZipFile.write(data);
+                    outZipFile.write(data.toLatin1());
                     outZipFile.close();
             }
             QStringList icons;
@@ -2241,7 +2237,7 @@ void logisdom::importIntoPage()
       QuaZipFileInfo info;
       QuaZipFile zipFile(&zip);
       QString name;
-      QByteArray configdata;
+      QString configdata;
       QStringList fileRenamed, newNameOfFileRenamed;
       for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile())
       {
@@ -2366,7 +2362,8 @@ void logisdom::importPage()
         QuaZipFileInfo info;
         QuaZipFile zipFile(&zip);
         QString name;
-        QByteArray configdata;
+        //QByteArray configdata;
+        QString configdata;
         QStringList fileRenamed, newNameOfFileRenamed;
         for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile())
         {
@@ -2457,7 +2454,7 @@ void logisdom::importPage()
             QString strNew = newNameOfFileRenamed.at(n) + ")";
             configdata.replace(strOriginal, strNew.toLatin1());
         }
-        iconArea->readconfigfile(configdata);
+        iconArea->readconfigfile(configdata.toLatin1());
         IconeAreaList.append(iconArea);
         htmlBind->setParameterLink(name, name + ".png");
         ui.tabWidgetIcon->setCurrentIndex(ui.tabWidgetIcon->count() - 1);
@@ -2979,7 +2976,8 @@ void logisdom::saveDat(QString fileName, QString data)
 void logisdom::saveconfig(QString fileName)
 {
 	QFile file(fileName);
-	QByteArray configdata;
+    //QByteArray configdata;
+    QString configdata;
 // Read original config file to get device config
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
 	{
@@ -2990,8 +2988,8 @@ void logisdom::saveconfig(QString fileName)
 		QTextStream in(&file);
 		while (!in.atEnd())
 		{
-			QString line = in.readLine();
-			configdata.append(line + "\n");
+            //QString line = in.readLine();
+            configdata.append(in.readLine() + "\n");
 		}
 		file.close();
 	}
@@ -3349,7 +3347,7 @@ void logisdom::readIconTabconfigfile(const QString &configdata)
 	SearchLoopBegin
 		if (!strsearch.isEmpty())
 		{
-			QByteArray data;
+            QString data;
 			data.append(strsearch);
 			QString name = getvalue("Tab_Name", strsearch);
 			int Locked = getvalue("Locked", strsearch).toInt(&ok);
@@ -3360,7 +3358,7 @@ void logisdom::readIconTabconfigfile(const QString &configdata)
 			scroll->setWidget(iconArea);
 			ui.tabWidgetIcon->addTab(scroll, name);
 			iconArea->setGeometry(0, 0, workspaceX.value(), workspaceY.value());
-            iconArea->readconfigfile(data);
+            iconArea->readconfigfile(data.toLatin1());
 			IconeAreaList.append(iconArea);
             if (ok and Locked) Lock(true);
 			htmlBind->setParameterLink(name, name + ".png");
@@ -3679,7 +3677,7 @@ void logisdom::deadDevice()
     QString cfgfilename = configfilename;
     QFile file(cfgfilename);
     QTextStream in(&file);
-    QByteArray configdata;
+    QString configdata;
 // Read original config file to get all device config and extract dead devices
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -3690,8 +3688,8 @@ void logisdom::deadDevice()
     {
         while (!in.atEnd())
         {
-            QString line = in.readLine();
-            configdata.append(line + "\n");
+            //QString line = in.readLine();
+            configdata.append(in.readLine() + "\n");
         }
     }
     file.close();
@@ -3723,7 +3721,8 @@ void logisdom::deadDevice()
     SearchLoopEnd
 // generate actual device list
     QString str;
-    QByteArray deviceData;
+    //QByteArray deviceData;
+    QString deviceData;
     if (configwin) configwin->GetDevicesStr(str); else return;
     deviceData.append(str);
     index_a = deviceData.indexOf("\n" + TAG_Begin, 0);
@@ -3805,7 +3804,7 @@ void logisdom::deadDevice()
     if (newcfgfile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         out.setGenerateByteOrderMark(true);
-        QByteArray oldDeviceBA, newDeviceBA, oldDeviceHex, newDeviceHex, remconfigdata, newconfigdata;
+        QString oldDeviceBA, newDeviceBA, oldDeviceHex, newDeviceHex, remconfigdata, newconfigdata;
         oldDeviceBA.append(oldDevice);
         newDeviceBA.append(newDevice);
         oldDeviceHex.append(oldDevice.toUtf8().toHex().toUpper());

@@ -1033,7 +1033,7 @@ retry :
 	QString LimitedStr(tr("Limited"));
 	QString AdminStr(tr("Administrator"));
 	items << LimitedStr << AdminStr;
-	QString item = inputDialog::getItemPalette(this, tr("User type"), tr("User type : "), items, 0, false, &ok, Qt::Dialog, parent);
+    QString item = inputDialog::getItemPalette(this, tr("User type"), tr("User type : "), items, 0, false, &ok, parent);
 	if (!ok) return;
 	if (item.isEmpty()) return;
 	int account = 0;
@@ -1899,7 +1899,7 @@ void configwindow::loadVD()
                     QString name = f.mid(open + 2, close - open - 2);
                     bool ok;
                     int i = -1;
-                    QString devicechoise = inputDialog::getItemPalette(this, tr("Select device "), tr("Select device for ") + name, deviceList, i, false, &ok, Qt::Dialog, parent);
+                    QString devicechoise = inputDialog::getItemPalette(this, tr("Select device "), tr("Select device for ") + name, deviceList, i, false, &ok, parent);
                     if (!ok) return;
                     onewiredevice *device = parent->configwin->Devicenameexist(devicechoise);
                     if (device) f = f.replace("[[" + name + "]]", device->getromid());
@@ -2074,7 +2074,7 @@ void configwindow::removeVD()
 		if (devicePtArray[n]->getromid().right(2) == familyVirtual)
 			items << devicePtArray[n]->getname();
 	if (items.count() == 0) return;
-	QString item = inputDialog::getItemPalette(this, tr("Remove Virtual Device"), tr("Device : "), items, 0, false, &ok, Qt::Dialog, parent);
+    QString item = inputDialog::getItemPalette(this, tr("Remove Virtual Device"), tr("Device : "), items, 0, false, &ok, parent);
 	if (!ok) return;
 	if (item.isEmpty()) return;
 	if ((messageBox::questionHide(this, tr("Remove ?"), tr("Do you really want to ") + item, parent, QMessageBox::No | QMessageBox::Yes) != QMessageBox::Yes)) return;
@@ -2166,7 +2166,7 @@ Retry :
         if (ip.isEmpty()) return;
         if (item == Ha7Net) port = QInputDialog::getInt(this, tr("Port"), tr("Port "), ha7net::default_port, 0, 99999, 1, &ok);
         else if (item == TCP_ResolType) port = QInputDialog::getInt(this, tr("Port"), tr("Port "), resol::default_port, 0, 99999, 1, &ok);
-        else port = inputDialog::getIntegerPalette(this, tr("Port"), tr("Port "), default_port_EZL50, 0, 99999, 1, &ok, Qt::Dialog, parent);
+        else port = inputDialog::getIntegerPalette(this, tr("Port"), tr("Port "), default_port_EZL50, 0, 99999, 1, &ok, parent);
         if (!ok) return;
     }
     else
@@ -2317,14 +2317,14 @@ void configwindow::readconfigfile(QString &configdata)
     //QFile Cfgfile(parent->configfilename);
     QFile Cfgfile("remote.cfg");
     //if (Cfgfile.open(QIODevice::ReadOnly | QIODevice::Text))
-    if (Cfgfile.exists())
+    if (Cfgfile.exists()) {
         if (messageBox::questionHide(this, tr("No configuration file ?"), tr("No configuration file was found\nDo you want to use remote connection ?"), parent, QMessageBox::No | QMessageBox::Yes) == QMessageBox::Yes)
 		{
 			QString ip = "remyfr.dnsalias.com";
             ip = inputDialog::getTextPalette(this, tr("IP Address"), tr("IP Address"), QLineEdit::Normal, ip, &ok, parent);
 			if (!ok) return;
 			if (ip.isEmpty()) return;
-			int port = inputDialog::getIntegerPalette(this, tr("Port"), tr("Port "), default_port_remote, 0, 99999, 1, &ok, Qt::Dialog, parent);
+            int port = inputDialog::getIntegerPalette(this, tr("Port"), tr("Port "), default_port_remote, 0, 99999, 1, &ok, parent);
 			if (!ok) return;
 			if (ip.isEmpty()) return;
 			QString rmstr =  tr("Remote Connection");
@@ -2360,7 +2360,7 @@ passwordagain:
             ui.tabWidget->setCurrentIndex(ui.tabWidget->count() - LocalTabsNumber);
 			ui.checkBoxServer->setEnabled(false);
 			return;
-		}
+        } }
     //Cfgfile.close();
 	setRemoteMode(configdata);
 	if (parent->isRemoteMode()) return;
@@ -2392,7 +2392,7 @@ passwordagain:
 
 
 
-void configwindow::readHtmlSetupConfig(QString &configdata)
+void configwindow::readHtmlSetupConfig(const QString &configdata)
 {
 	QString comboSelection;
 	disconnect(ui.comboBoxHtml, SIGNAL(currentIndexChanged(int)), this, SLOT(changeHtmlSetup(int)));
@@ -2400,9 +2400,9 @@ void configwindow::readHtmlSetupConfig(QString &configdata)
 	QString TAG_End = "HTMLSetup_End";
 	SearchLoopBegin
 	comboSelection = logisdom::getvalue("HtmlComboSelection", strsearch);
-	QByteArray data;
+    QString data;
 	data.append(strsearch);
-    readHtmlSetupBlock(data);
+    readHtmlSetupBlock(data.toLatin1());
 	SearchLoopEnd
 	int i = ui.comboBoxHtml->findText(comboSelection);
 	connect(ui.comboBoxHtml, SIGNAL(currentIndexChanged(int)), this, SLOT(changeHtmlSetup(int)));
@@ -2415,7 +2415,7 @@ void configwindow::readHtmlSetupConfig(QString &configdata)
 
 
 
-void configwindow::readHtmlSetupBlock(QByteArray &configdata)
+void configwindow::readHtmlSetupBlock(const QString &configdata)
 {
     QString TAG_Begin = "HTMLBlock_Begin";
     QString TAG_End = "HTMLBlock_End";
@@ -2523,7 +2523,7 @@ void configwindow::enablePathConfig()
 
 
 
-void configwindow::getHtmlLinks(QString user, QString password, QString &str)
+void configwindow::getHtmlLinks(QString, QString, QString &str)
 {
     // http://remyfr.dnsalias.com:1220/request=(GetMainMenu)user=(demo)password=(demo)
     str += "\n\n" + tr("Main page html automated : ");
@@ -3178,7 +3178,7 @@ void configwindow::GetDevicesStr(QString &str)
 
 
 
-void configwindow::SetDevicesScratchpad(const QByteArray &configdata, bool save)
+void configwindow::SetDevicesScratchpad(const QString &configdata, bool save)
 {
 	QString ReadRomID, Scratchpad;
 	QString TAG_Begin = One_Wire_Device;
@@ -3199,7 +3199,7 @@ void configwindow::SetDevicesScratchpad(const QByteArray &configdata, bool save)
 
 
 
-void configwindow::SetDevicesMainValue(const QByteArray &configdata, bool)
+void configwindow::SetDevicesMainValue(const QString &configdata, bool)
 {
 	bool ok;
 	QString ReadRomID, ValueStr;

@@ -129,8 +129,8 @@ struct htmlSetup
 	void GetAllMenuHtml(QString *str, QString &ID, int Privilege);
 	void GetDevicesStr(QString &str);
 	void GetDevicesScratchpad(QString &str);
-	void SetDevicesScratchpad(const QByteArray &configdata, bool save);
-	void SetDevicesMainValue(const QByteArray &configdata, bool save);
+    void SetDevicesScratchpad(const QString &configdata, bool save);
+    void SetDevicesMainValue(const QString &configdata, bool save);
 	void GetDevicesMainValue(QString &str);
 	void GetMenuHtml(QString *str, QString &ID, int Privilege, QString Menu);
 	net1wire *MasterExist(const QString &IPHex);
@@ -155,8 +155,8 @@ struct htmlSetup
     void readPngConfig(QString &configdata);
 	void readGeneralConfig(QString &configdata);
 	void readHtmlConfig(QString &configdata);
-	void readHtmlSetupConfig(QString &configdata);
-	void readHtmlSetupBlock(QByteArray &configdata);
+    void readHtmlSetupConfig(const QString &configdata);
+    void readHtmlSetupBlock(const QString &configdata);
 	void createVirtualDevices(QString &configdata);
 	void setRemoteMode(QString &configdata);
 	void setServerMode(QString &configdata);
