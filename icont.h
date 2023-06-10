@@ -84,7 +84,11 @@ public slots:
     void textrezise(int fontsize);
     void setFont(const QString &font);
 private slots:
-	void textreweight(int fontweight);
+#if QT_VERSION < 0x060000
+    void textreweight(int);
+#else
+    void textreweight(QFont::Weight);
+#endif
 	void textrestretch(int stretch);
     void changeText();
 	void resetPos();

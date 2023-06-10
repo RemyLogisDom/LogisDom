@@ -738,9 +738,18 @@ more:
 		{
 			QByteArray header;
 			header.append(headerStart"\n");
-			header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
-			header.append(logisdom::saveformat(DataSize, "0"));
-			header.append(logisdom::saveformat(RequestStr, order));
+#if QT_VERSION < 0x060000
+            header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
+            header.append(logisdom::saveformat(DataSize, "0"));
+            header.append(logisdom::saveformat(RequestStr, order));
+#else
+            header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
+            header.append(logisdom::saveformat(DataSize, "0").toLatin1());
+            header.append(logisdom::saveformat(RequestStr, order).toLatin1());
+#endif
+            header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
+            header.append(logisdom::saveformat(DataSize, "0").toLatin1());
+            header.append(logisdom::saveformat(RequestStr, order).toLatin1());
 			header.append(File_not_found);
 			header.append(headerEnd"\n");
             if (tcp->isValid()) tcp->write(header);
@@ -904,9 +913,19 @@ more:
 		}			
 		QByteArray header;
 		header.append(headerStart"\n");
-		header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
-		header.append(logisdom::saveformat(DataSize, "0"));
-		header.append(logisdom::saveformat(RequestStr, order));
+#if QT_VERSION < 0x060000
+        header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
+        header.append(logisdom::saveformat(DataSize, "0"));
+        header.append(logisdom::saveformat(RequestStr, order));
+#else
+        header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
+        header.append(logisdom::saveformat(DataSize, "0").toLatin1());
+        header.append(logisdom::saveformat(RequestStr, order).toLatin1());
+#endif
+
+        header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
+        header.append(logisdom::saveformat(DataSize, "0").toLatin1());
+        header.append(logisdom::saveformat(RequestStr, order).toLatin1());
 		header.append(headerEnd"\n");
         if (tcp->isValid()) tcp->write(header);
         tcp->waitForBytesWritten(10000);
@@ -957,7 +976,11 @@ QString Connection::extractBuffer(const QString &data)
 {
 	QString extract = "";
 	int chdeb, chfin, L;
-	buffer += data;
+#if QT_VERSION < 0x060000
+    buffer += data;
+#else
+    buffer += data.toLatin1();
+#endif
 	chdeb = buffer.indexOf("<");
 	chfin = buffer.indexOf(">");
 	L = buffer.length();

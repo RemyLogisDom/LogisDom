@@ -25,10 +25,13 @@
 #include <QDataStream>
 #include <QString>
 #include <QSslSocket>
+#include <QSslError>
 #include <QTextStream>
 #include <QByteArray>
 #include <QDateTime>
-#include <QTextCodec>
+#if QT_VERSION > 0x050000
+    #include <QRandomGenerator>
+#endif
 #include <QFile>
 #include <QFileInfo>
 #include <QHostInfo>
@@ -39,7 +42,11 @@
 static int dateswap(QString form, uint unixtime )
 {
     QDateTime fromunix;
+#if QT_VERSION < 0x060000
     fromunix.setTime_t(unixtime);
+#else
+    fromunix.setSecsSinceEpoch(unixtime);
+#endif
     QString numeric = fromunix.toString((const QString)form);
     bool ok;
     return (int)numeric.toFloat(&ok);
@@ -48,7 +55,7 @@ static int dateswap(QString form, uint unixtime )
 static QString encodeBase64( QString xml )
 {
     QByteArray text;
-    text.append(xml);
+    text.append(xml.toLatin1());
     return text.toBase64();
 }
 
@@ -58,7 +65,11 @@ static QString TimeStampMail()
     /* mail rtf Date format! http://www.faqs.org/rfcs/rfc788.html */
     uint unixtime = uint(time(nullptr));
     QDateTime fromunix;
+#if QT_VERSION < 0x060000
     fromunix.setTime_t(unixtime);
+#else
+    fromunix.setSecsSinceEpoch(unixtime);
+#endif
     QStringList RTFdays = QStringList() << "day_nullptr" << "Mon" << "Tue" << "Wed" << "Thu" << "Fri" << "Sat" << "Sun";
     QStringList RTFmonth = QStringList() << "month_nullptr" << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "Aug" << "Sep" << "Oct" << "Nov" << "Dec";
     QDate timeroad(dateswap("yyyy",unixtime),dateswap("M",unixtime),dateswap("d",unixtime));
@@ -81,13 +92,16 @@ static QString TimeStampMail()
 
 static QString createBoundary()
 {
+#if QT_VERSION < 0x060000
     QByteArray hash = QCryptographicHash::hash(QString(QString::number(qrand())).toUtf8(),QCryptographicHash::Md5);
+#else
+    QByteArray hash = QCryptographicHash::hash(QString(QString::number(QRandomGenerator::global()->generate())).toUtf8(),QCryptographicHash::Md5);
+#endif
     QString boundary = hash.toHex();
     boundary.truncate(26);
     boundary.prepend("----=_NextPart_");
     return boundary;
 }
-
 
 MailSender::MailSender(const QString &from, const QStringList &to, const QString &subject, const QString &body)
 {
@@ -152,7 +166,12 @@ QString MailSender::mailData()
     QString boundary1 = createBoundary();
     QString boundary2 = createBoundary();
 
+#if QT_VERSION < 0x060000
     QByteArray hash = QCryptographicHash::hash(QString(QString::number(qrand())).toUtf8(),QCryptographicHash::Md5);
+#else
+    QByteArray hash = QCryptographicHash::hash(QString(QString::number(QRandomGenerator::global()->generate())).toUtf8(),QCryptographicHash::Md5);
+#endif
+
     QString id = hash.toHex();
     data.append("Message-ID: " + id + "@" + QHostInfo::localHostName() + "\n");
 

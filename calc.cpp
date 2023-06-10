@@ -172,17 +172,17 @@ bool calc::ajouter(QString &C)
         if (Prev == -1) Prev = 0; else Prev++;
         A = C.mid(Prev, posx - Prev);
         textBrowserResult += "\n" + ("A = " + A);
-        if (A.isEmpty()) syntaxError(tr("Missing operand A"));		ManageError
+        if (A.isEmpty()) { syntaxError(tr("Missing operand A")); ManageError }
         int Next = getNextOp(C, posx);
         if (Next == -1) Next = C.length() - 1; else Next--;
         B = C.mid(posx + 1, Next - posx);
         textBrowserResult += "\n" + ("B = " + B);
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         ok = true;
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
         if (!ok) ManageError("Operand A error : " + A); ManageError
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         if (!ok) return false;
         double v = a + b;
         int index = V.count();
@@ -396,17 +396,17 @@ bool calc::multiplier(QString &C)
         if (Prev == -1) Prev = 0; else Prev++;
         A = C.mid(Prev, posx - Prev);
         textBrowserResult += "\n" + ("A = " + A);
-        if (A.isEmpty()) syntaxError(tr("Missing operand A"));		ManageError
+        if (A.isEmpty()) { syntaxError(tr("Missing operand A")); ManageError }
         int Next = getNextOp(C, posx);
         if (Next == posx + 1) Next = getNextOp(C, posx + 1);
         if (Next == -1) Next = C.length() - 1; else Next--;
         B = C.mid(posx + 1, Next - posx);
         textBrowserResult += "\n" + ("B = " + B);
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v = a * b;
         int index = V.count();
         V.append(v);
@@ -438,17 +438,17 @@ bool calc::diviser(QString &C)
         if (Prev == -1) Prev = 0; else Prev++;
         A = C.mid(Prev, posx - Prev);
         textBrowserResult += "\n" + ("A = " + A);
-        if (A.isEmpty()) syntaxError(tr("Missing operand A"));		ManageError
+        if (A.isEmpty()) { syntaxError(tr("Missing operand A")); ManageError }
         int Next = getNextOp(C, posx);
         if (Next == -1) Next = C.length() - 1; else Next--;
         B = C.mid(posx + 1, Next - posx);
         textBrowserResult += "\n" + ("B = " + B);
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         ok = true;
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v = a / b;
         int index = V.count();
         V.append(v);
@@ -486,10 +486,10 @@ bool calc::enlever(QString &C)
         ok = true;
         if (A.isEmpty()) a = 0;
         else if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v = a - b;
         int index = V.count();
         V.append(v);
@@ -527,10 +527,10 @@ bool calc::sup(QString &C)
         textBrowserResult += "\n" + ("B = " + B);
         ok = true;
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v;
         if (a > b) v = 1; else v = 0;
         int index = V.count();
@@ -570,10 +570,10 @@ bool calc::inf(QString &C)
         textBrowserResult += "\n" + ("B = " + B);
         ok = true;
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(&ok); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v;
         if (a < b) v = 1; else v = 0;
         int index = V.count();
@@ -613,10 +613,10 @@ bool calc::egal(QString &C)
         textBrowserResult += "\n" + ("B = " + B);
         ok = true;
         if (isNumeric(A)) a = A.toDouble(); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v;
         if (logisdom::AreSame(a,b)) v = 1; else v = 0;
         int index = V.count();
@@ -653,10 +653,10 @@ bool calc::different(QString &C)
         textBrowserResult += "\n" + ("B = " + B);
         ok = true;
         if (isNumeric(A)) a = A.toDouble(); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v;
         if (logisdom::AreNotSame(a, b)) v = 1; else v = 0;
         int index = V.count();
@@ -692,10 +692,10 @@ bool calc::pw(QString &C)
         textBrowserResult += "\n" + ("B = " + B);
         ok = true;
         if (isNumeric(A)) a = A.toDouble(); else a = toNumeric(A, &ok);
-        if (!ok) ManageError("Operand A error : " + A); ManageError
-        if (B.isEmpty()) syntaxError(tr("Missing operand B"));		ManageError
+        if (!ok) { ManageError("Operand A error : " + A); ManageError }
+        if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(B)) b = B.toDouble(); else b = toNumeric(B, &ok);
-        if (!ok) ManageError("Operand B error : " + B); ManageError
+        if (!ok) { ManageError("Operand B error : " + B); ManageError }
         double v;
         v = pow(a, b);
         int index = V.count();

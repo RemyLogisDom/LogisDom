@@ -315,8 +315,12 @@ void ha7netthread::get(QString &Request, QString &Data)
     if (reply->error() == QNetworkReply::NoError)
     {
         QByteArray data = reply->readAll();
+#if QT_VERSION < 0x060000
         QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
         Data = Utf8Codec->toUnicode(data);
+#else
+        Data.append(data);
+#endif
         if (logEnabled) log += addTimeTag tr("Data received without error");
         if (logEnabled) log += addTimeTag " GET : " + Data;
     }

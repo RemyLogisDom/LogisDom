@@ -25,7 +25,7 @@
 
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QFormLayout>
-#include <QtWidgets/QDesktopWidget>
+//QT 6 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QColorDialog>
@@ -71,6 +71,17 @@
 
 bool logisdom::NoHex = false;
 
+#if QT_VERSION < 0x060000
+    #define openModeWrite QIODevice::WriteOnly
+#else
+    #define openModeWrite QIODeviceBase::WriteOnly
+#endif
+
+#if QT_VERSION < 0x060000
+    #define openModeRead QIODevice::ReadOnly
+#else
+    #define openModeRead QIODeviceBase::ReadOnly
+#endif
 
 logisdom::logisdom(QWidget *parent) : QMainWindow(parent)
 {
@@ -357,7 +368,7 @@ void logisdom::onAllwaysTop(bool checked)
     }
     else
     {
-        flags &= !Qt::WindowStaysOnTopHint;
+        flags &= ~Qt::WindowStaysOnTopHint;
     }
     palette.setWindowFlags(flags);
     palette.show();
@@ -1681,11 +1692,15 @@ QString logisdom::getvalue(QString search, const QString &str)
         if (result.mid(0, 4) == "HEX:")
 		{
             QString Hex;
-			Hex.append(result.remove(0, 4));
-            QTextCodec *Utf8Codec = QTextCodec::codecForName("UTF-8");
+#if QT_VERSION < 0x060000
+            Hex.append(result.remove(0, 4));
+#else
+            Hex.append(result.remove(0, 4).toLatin1());
+#endif \
+    // Qt 6 QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
             QByteArray F = QByteArray::fromHex(Hex.toLatin1());
-			result = Utf8Codec->toUnicode(F);
-		}
+            result = F; // Qt 6 Utf8Codec->toUnicode(F);
+        }
 	}
 	return result;
 }
@@ -1869,7 +1884,11 @@ void logisdom::mousePressEvent(QMouseEvent *event)
                     EnableHtmlAction.setChecked(IconeAreaList.at(index)->isHtmlEnabled());
                     contextualmenu.addAction(&EnableHtmlAction);
                 }
+#if QT_VERSION < 0x060000
                 selection = contextualmenu.exec(event->globalPos());
+#else
+                selection = contextualmenu.exec(event->globalPosition().toPoint());
+#endif
                 if (selection == &AddAction) addIconTab();
                 if (selection == &RemoveAction) removeIconTab();
                 if (selection == &RenameAction) renameIconTab();
@@ -1922,7 +1941,9 @@ void logisdom::exportSelection()
         {
             QString cfgFileName = ui.tabWidgetIcon->tabText(index) + ".cfg";
             QuaZipFile outZipFile(&zipFile);
-            if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(cfgFileName, cfgFileName)))
+            // Qt 6
+            // if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(cfgFileName, cfgFileName)))
+            if(outZipFile.open(openModeWrite, QuaZipNewInfo(cfgFileName, cfgFileName)))
             {
                     //QByteArray data;
                     //data.append(str);
@@ -1952,7 +1973,7 @@ void logisdom::exportSelection()
                 if (iconFile.open(QIODevice::ReadOnly))
                 {
                     QFileInfo iconInfo(iconFile);
-                    if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(iconInfo.fileName(), iconInfo.fileName())))
+                    if(outZipFile.open(openModeWrite, QuaZipNewInfo(iconInfo.fileName(), iconInfo.fileName())))
                     {
                         QByteArray data;
                         data.append(iconFile.readAll());
@@ -1991,7 +2012,7 @@ void logisdom::exportPage()
         {
             QString cfgFileName = ui.tabWidgetIcon->tabText(index) + ".cfg";
             QuaZipFile outZipFile(&zipFile);
-            if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(cfgFileName, cfgFileName)))
+            if(outZipFile.open(openModeWrite, QuaZipNewInfo(cfgFileName, cfgFileName)))
             {
                     QString data;
                     data.append(str);
@@ -2022,7 +2043,7 @@ void logisdom::exportPage()
                 if (iconFile.open(QIODevice::ReadOnly))
                 {
                     QFileInfo iconInfo(iconFile);
-                    if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(iconInfo.fileName(), iconInfo.fileName())))
+                    if(outZipFile.open(openModeWrite, QuaZipNewInfo(iconInfo.fileName(), iconInfo.fileName())))
                     {
                         QByteArray data;
                         data.append(iconFile.readAll());
@@ -2199,7 +2220,7 @@ void logisdom::saveHtmlPage()
 void logisdom::getHtmlHeader(QTextStream &out, QString &title, QString backgroundColorHex)
 {
     QString codec;
-    codec = configwin->getCodecName();
+    //codec = configwin->getCodecName();
     if (codec.isEmpty()) codec = "UTF-8";
     out << "<html>\n\
 <head>\n\
@@ -2232,8 +2253,8 @@ void logisdom::importIntoPage()
   QuaZip zip(getFileName);
   if(zip.open(QuaZip::mdUnzip))
   {
-      QTextCodec *codec = zip.getFileNameCodec();
-      zip.setFileNameCodec(codec);
+      //QTextCodec *codec = zip.getFileNameCodec();
+      //zip.setFileNameCodec(codec);
       QuaZipFileInfo info;
       QuaZipFile zipFile(&zip);
       QString name;
@@ -2357,8 +2378,8 @@ void logisdom::importPage()
     QuaZip zip(getFileName);
     if(zip.open(QuaZip::mdUnzip))
     {
-        QTextCodec *codec = zip.getFileNameCodec();
-        zip.setFileNameCodec(codec);
+        //QTextCodec *codec = zip.getFileNameCodec();
+        //zip.setFileNameCodec(codec);
         QuaZipFileInfo info;
         QuaZipFile zipFile(&zip);
         QString name;
@@ -3275,7 +3296,7 @@ void logisdom::readconfigfile(const QString &configdata)
     else
     {
         paletteOnTop = false;
-        flags &= !Qt::WindowStaysOnTopHint;
+        flags &= ~Qt::WindowStaysOnTopHint;
         alwaysOnTop.setChecked(false);
     }
     palette.setWindowFlags(flags);
@@ -3631,8 +3652,8 @@ void logisdom::ZipFile(const QString &filename)
 			if (zipFile.getZipError() == UNZ_OK)
 			{
 				QuaZipFile outZipFile(&zipFile);
-				if(outZipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(name, name)))
-				{
+                if(outZipFile.open(openModeWrite, QuaZipNewInfo(name, name)))
+                {
 					outZipFile.write(data);
 					if(outZipFile.getZipError() != UNZ_OK) GenMsg("Cannot create Zip file " + zipFileName);
 					outZipFile.close();
@@ -3940,7 +3961,7 @@ void logisdom::deadDevice()
                             if (currentfilename.contains(oldDevList.at(n)))
                             {
                                 QString newcurrentfilename = currentfilename.replace(oldDevList.at(n), newDevList.at(n));
-                                if (oldDatFile.open(QIODevice::ReadOnly) && newDatFile.open(QIODevice::WriteOnly, QuaZipNewInfo(newcurrentfilename, newcurrentfilename)))
+                                if (oldDatFile.open(openModeRead) && newDatFile.open(openModeWrite, QuaZipNewInfo(newcurrentfilename, newcurrentfilename)))
                                 {
                                     QByteArray data = oldDatFile.readAll();
                                     oldDatFile.close();

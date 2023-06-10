@@ -75,7 +75,7 @@ enum NetType
 
 static const QString NetTypeStr[LastType] =
     {
-    "NoType", "Ha7Net", "M-Bus", "Ezl50-FTS800", "Ezl50-X10", "Ezl50-PLCBus", "MultiGest", "Remote Connection", "TeleInfo", "TCP-RPS2", "HA7S", "RESOL", "Modbus", "EOcean"
+    "NoType", "Ha7Net", "M-Bus", "Ezl50-FTS800", "Ezl50-X10 (not active)", "Ezl50-PLCBus (not active)", "MultiGest", "Remote Connection", "TeleInfo", "TCP-RPS2", "HA7S", "RESOL", "Modbus", "EOcean"
     };
 
 

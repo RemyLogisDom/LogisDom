@@ -31,6 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QDateTime>
 #include <QCryptographicHash>
 #include <QDataStream>
+#if QT_VERSION > 0x050000
+#include <QRandomGenerator>
+#endif
 
 SimpleCrypt::SimpleCrypt():
     m_key(0),
@@ -38,7 +41,11 @@ SimpleCrypt::SimpleCrypt():
     m_protectionMode(ProtectionChecksum),
     m_lastError(ErrorNoError)
 {
+#if QT_VERSION < 0x060000
     qsrand(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
+#else
+    QRandomGenerator(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
+#endif
 }
 
 SimpleCrypt::SimpleCrypt(quint64 key):
@@ -47,7 +54,11 @@ SimpleCrypt::SimpleCrypt(quint64 key):
     m_protectionMode(ProtectionChecksum),
     m_lastError(ErrorNoError)
 {
+#if QT_VERSION < 0x060000
     qsrand(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
+#else
+    QRandomGenerator(uint(QDateTime::currentMSecsSinceEpoch() & 0xFFFF));
+#endif
     splitKey();
 }
 
@@ -102,7 +113,11 @@ QByteArray SimpleCrypt::encryptToByteArray(QByteArray plaintext)
     QByteArray integrityProtection;
     if (m_protectionMode == ProtectionChecksum) {
         flags |= CryptoFlagChecksum;
+#if QT_VERSION < 0x060000
         QDataStream s(&integrityProtection, QIODevice::WriteOnly);
+#else
+        QDataStream s(&integrityProtection, QIODeviceBase::WriteOnly);
+#endif
         s << qChecksum(ba.constData(), ba.length());
     } else if (m_protectionMode == ProtectionHash) {
         flags |= CryptoFlagHash;
@@ -113,7 +128,11 @@ QByteArray SimpleCrypt::encryptToByteArray(QByteArray plaintext)
     }
 
     //prepend a random char to the string
+#if QT_VERSION < 0x060000
     char randomChar = char(qrand() & 0xFF);
+#else
+    char randomChar = char(QRandomGenerator::global()->generate() & 0xFF);
+#endif
     ba = randomChar + integrityProtection + ba;
 
     int pos(0);
@@ -221,7 +240,11 @@ QByteArray SimpleCrypt::decryptToByteArray(QByteArray cypher)
         }
         quint16 storedChecksum;
         {
+#if QT_VERSION < 0x060000
             QDataStream s(&ba, QIODevice::ReadOnly);
+#else
+            QDataStream s(&ba, QIODeviceBase::ReadOnly);
+#endif
             s >> storedChecksum;
         }
         ba = ba.mid(2);

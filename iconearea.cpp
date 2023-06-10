@@ -110,7 +110,11 @@ void IconeArea::setBackGroundColor(QColor color)
 {
     backgroundColor = color;
     QPalette pal = palette();
+#if QT_VERSION < 0x060000
     pal.setColor(QPalette::Background, backgroundColor);
+#else
+    pal.setColor(QPalette::Base, backgroundColor);
+#endif
     setAutoFillBackground(true);
     setPalette(pal);
 }
@@ -191,7 +195,7 @@ void IconeArea::appendconfigfile(QString &configdata)
 
 
 
-void IconeArea::readconfigfile(const QByteArray &configdata)
+void IconeArea::readconfigfile(const QString &configdata)
 {
     QColor color;
     QString hexColor = logisdom::getvalue("Background_Color", configdata);
@@ -200,7 +204,11 @@ void IconeArea::readconfigfile(const QByteArray &configdata)
         {
             backgroundColor = color;
             QPalette pal = palette();
+#if QT_VERSION < 0x060000
             pal.setColor(QPalette::Background, backgroundColor);
+#else
+            pal.setColor(QPalette::Base, backgroundColor);
+#endif
             setAutoFillBackground(true);
             setPalette(pal);
         }
@@ -394,11 +402,19 @@ void IconeArea::dropEvent(QDropEvent *event)
             {
                 QPixmap pixmap;
                 iconf *icon = newIcon(this);
+#if QT_VERSION < 0x060000
                 QPoint IconPos = QPoint(mapFromParent(event->pos()) - QPoint(pixmap.width()/2, pixmap.height()/2));
                 icon->setpict(name, IconPos);
                 QPoint TextPos = QPoint(mapFromParent(event->pos()) - QPoint(pixmap.width()/2, pixmap.height()/2) + QPoint(pixmap.width(), pixmap.height()));
                 icon->settxt(name, TextPos);
                 QPoint ValuePos = QPoint(mapFromParent(event->pos()) - QPoint(pixmap.width()/2, pixmap.height()/2) + QPoint(0, pixmap.height()));
+#else
+                QPoint IconPos = QPoint(mapFromParent(event->position().toPoint()) - QPoint(pixmap.width()/2, pixmap.height()/2));
+                icon->setpict(name, IconPos);
+                QPoint TextPos = QPoint(mapFromParent(event->position().toPoint()) - QPoint(pixmap.width()/2, pixmap.height()/2) + QPoint(pixmap.width(), pixmap.height()));
+                icon->settxt(name, TextPos);
+                QPoint ValuePos = QPoint(mapFromParent(event->position().toPoint()) - QPoint(pixmap.width()/2, pixmap.height()/2) + QPoint(0, pixmap.height()));
+#endif
                 icon->setvalue("", ValuePos);
                 event->setDropAction(Qt::CopyAction);
                 event->accept();
@@ -461,7 +477,11 @@ void IconeArea::mouseMoveEvent(QMouseEvent *event)
         mouseWheelDelta = 0;
         return;
     }
+#if QT_VERSION < 0x060000
     if (childClicked->pixmap() != nullptr)
+#else
+    if (!childClicked->pixmap().isNull())
+#endif
 	{
 		// only if clicked on pixmap and not Qlabel
 		// define drag size if multiple selection
@@ -535,7 +555,11 @@ void IconeArea::mouseMoveEvent(QMouseEvent *event)
         {
 			if (IconList.at(index)->highlighted)
 			{
+#if QT_VERSION < 0x060000
                 QPixmap pixmap = *IconList.at(index)->icon->pixmap();
+#else
+                QPixmap pixmap = IconList.at(index)->icon->pixmap();
+#endif
                 QPoint drawPoint(IconList.at(index)->icon->x() - xMin, IconList.at(index)->icon->y() - yMin);
                 dragpainter.drawPixmap(drawPoint, pixmap);
 			}
@@ -548,7 +572,11 @@ void IconeArea::mouseMoveEvent(QMouseEvent *event)
         {
 			if (IconList.at(index)->highlighted)
 			{
-				QPixmap tempPixmap = *IconList.at(index)->icon->pixmap();
+#if QT_VERSION < 0x060000
+                QPixmap tempPixmap = *IconList.at(index)->icon->pixmap();
+#else
+                QPixmap tempPixmap = IconList.at(index)->icon->pixmap();
+#endif
 				QPainter painter;
 				painter.begin(&tempPixmap);
 				painter.fillRect(tempPixmap.rect(), QColor(127, 127, 127, 127));
@@ -556,16 +584,11 @@ void IconeArea::mouseMoveEvent(QMouseEvent *event)
                 IconList.at(index)->icon->setPixmap(tempPixmap);
             }
         }
+#if QT_VERSION < 0x060000
         drag->start(Qt::MoveAction);
-
-
-
-
-
-
-
-
-
+#else
+        drag->exec(Qt::MoveAction);
+#endif
         QPoint shift = mapFromGlobal(QCursor::pos() - click);
 // cancel if item position is outside area
         for (int index=0; index<IconList.count(); index++)
@@ -658,8 +681,11 @@ void IconeArea::mouseMoveEvent(QMouseEvent *event)
 		//painter.fillRect(tempPixmap.rect(), QColor(127, 127, 127, 127));
 		//painter.end();
 		//childClicked->setPixmap(tempPixmap);
-
-		drag->start(Qt::MoveAction);
+#if QT_VERSION < 0x060000
+        drag->start(Qt::MoveAction);
+#else
+        drag->exec(Qt::MoveAction);
+#endif
 		childClicked->move(mapFromGlobal(QCursor::pos()) - (event->pos() - childClicked->pos()));
 		childClicked->setText(txt);
 	}
@@ -1328,7 +1354,7 @@ void IconeArea::iconUndo()
 		for (int index=0; index<count; index++) delete IconList.at(index);
 		IconList.clear();
 		undoIndex--;
-		QByteArray configdata;
+        QString configdata;
 		configdata.append(undo.at(undoIndex));
 		QString ReadRomID, ReadName;
 		QString TAG_Begin = Icon_Begin;
@@ -1356,8 +1382,8 @@ void IconeArea::iconRedo()
 		for (int index=0; index<count; index++) delete IconList.at(index);
 		IconList.clear();
 		undoIndex++;
-		QByteArray configdata;
-		configdata.append(undo.at(undoIndex));
+        QString configdata;
+        configdata.append(undo.at(undoIndex).toLatin1());
 		QString ReadRomID, ReadName;
 		QString TAG_Begin = Icon_Begin;
 		QString TAG_End = Icon_Finished;
@@ -1597,11 +1623,19 @@ void IconeArea::DupliquerwFormula(int)
 
 void IconeArea::mouseWheel(QWheelEvent *event)
 {
+#if QT_VERSION < 0x060000
     if (event->delta() > 0)
+#else
+    if (!event->angleDelta().manhattanLength() > 0)
+#endif
     {
         mouseWheelDelta ++;
     }
+#if QT_VERSION < 0x060000
     if (event->delta() < 0)
+#else
+    if (event->angleDelta().manhattanLength() < 0)
+#endif
     {
         mouseWheelDelta --;
     }
@@ -1609,8 +1643,13 @@ void IconeArea::mouseWheel(QWheelEvent *event)
     int count = IconList.count();
     for (int index=0; index<count; index++)
     {
+#if QT_VERSION < 0x060000
         if (event->delta() > 0) IconList.at(index)->bigger();
         if (event->delta() < 0) IconList.at(index)->smaller();
+#else
+        if (event->angleDelta().manhattanLength() > 0) IconList.at(index)->bigger();
+        if (event->angleDelta().manhattanLength() < 0) IconList.at(index)->smaller();
+#endif
     }
     PushUndo();
 }

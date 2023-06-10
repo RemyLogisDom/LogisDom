@@ -233,12 +233,13 @@ void mailServerPrivate::createSocket()
         qCDebug(SIMPLEMAIL_Server) << "connected" << state << socket->readAll();
         state = WaitingForServiceReady220;
     });
-
-    q->connect(socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error),
-               q, [=] (QAbstractSocket::SocketError error) {
+#if QT_VERSION < 0x060000
+    q->connect(socket, static_cast<void(QTcpSocket::*)(QTcpSocket::SocketError)>(&QTcpSocket::error), q, [=] (QAbstractSocket::SocketError error) {
+#else
+    q->connect(socket, &QTcpSocket::errorOccurred, q, [=] (QAbstractSocket::SocketError error) {
+#endif
         qCDebug(SIMPLEMAIL_Server) << "SocketError" << error << socket->readAll();
     });
-
     q->connect(socket, &QTcpSocket::readyRead, q, [=] {
         qCDebug(SIMPLEMAIL_Server) << "readyRead" << socket->bytesAvailable();
         switch (state) {

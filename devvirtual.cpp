@@ -425,10 +425,14 @@ void devvirtual::setconfig(const QString &strsearch)
                         if (result.mid(0, 4) == "HEX:")
                         {
                            QByteArray Hex;
-                            Hex.append(result.remove(0, 4));
-                            QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
+#if QT_VERSION < 0x060000
+                           Hex.append(result.remove(0, 4));
+#else
+                           Hex.append(result.remove(0, 4).toLatin1());
+#endif
+                            // Qt 6 QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
                             QByteArray F = QByteArray::fromHex(Hex);
-                            result = Utf8Codec->toUnicode(F);
+                            result = F; // Qt 6 Utf8Codec->toUnicode(F);
                         }
                         else
                         {

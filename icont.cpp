@@ -170,12 +170,22 @@ void icont::setHighlighted(bool state)
 
 
 
+#if QT_VERSION < 0x060000
 void icont::textreweight(int fontweight)
 {
     fontText.setWeight(fontweight);
     text->setFont(fontText);
     text->resize(text->sizeHint());
 }
+#else
+void icont::textreweight(QFont::Weight fontweight)
+{
+    fontText.setWeight(fontweight);
+    text->setFont(fontText);
+    text->resize(text->sizeHint());
+}
+#endif
+
 
 
 

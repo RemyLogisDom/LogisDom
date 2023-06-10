@@ -715,9 +715,13 @@ void calcthread::get(const QString &Request, QString &Data)
             QString newUrlStr = urlRedirectedTo.toString();
             emit(redirectHttp(newUrlStr));
         }
-        QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
         QByteArray data = reply->readAll();
+#if QT_VERSION < 0x060000
+        QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
         Data = Utf8Codec->toUnicode(data);
+#else
+        Data.append(data);
+#endif
         textBrowserResult += "\n" + QString("%1").arg(Data.count()) + tr(" bytes received without error");
     }
     else textBrowserResult += "\nHttp error " + reply->errorString();
@@ -1324,7 +1328,7 @@ bool calcthread::resoudreParenthese()
             {
                 bool ok = false;
                 double opD = runOP(OP, C, &ok);
-                if (!ok) syntaxError("Function error : " + OP);		ManageError
+                if (!ok) { syntaxError("Function error : " + OP); ManageError }
                 int index = V.count();
                 V.append(opD);
                 QString P = Calc.left(OPindex + 1);
@@ -1341,7 +1345,7 @@ bool calcthread::resoudreParenthese()
             {
                 bool ok = false;
                 double opD = runOP(OP, C, &ok);
-                if (!ok) syntaxError(tr("Function error : ") + OP);		ManageError
+                if (!ok) { syntaxError(tr("Function error : ") + OP); ManageError }
                 int index = V.count();
                 V.append(opD);
                 QString P = Calc.left(OPindex + 1);
@@ -2307,15 +2311,15 @@ double calcthread::getValueRomID(const QString &RomID, const QString &Minutes, c
 	int minutes;
 	if (isNumeric(Minutes)) minutes = Minutes.toInt(&ok);
         else minutes = int(toNumeric(Minutes, &ok));
-	if (!ok) syntaxError(tr("Time parameter error ") + RomID); ResultError
+        if (!ok) { syntaxError(tr("Time parameter error ") + RomID); ResultError }
 	int width;
 	if (isNumeric(Width)) width = Width.toInt(&ok);
         else width = int(toNumeric(Width, &ok));
-	if (!ok) syntaxError(tr("Width parameter error ") + RomID); ResultError
+        if (!ok) { syntaxError(tr("Width parameter error ") + RomID); ResultError }
 	onewiredevice *device = checkDevice(RomID);
 	QDateTime now = QDateTime::currentDateTime();
-	QDateTime T;
-	if (!device) dataError(tr("Device not found ") + RomID); ResultError
+    QDateTime T;
+    if (!device) { dataError(tr("Device not found ") + RomID); ResultError }
 	if (TCalc)
 	{
 		for (int n=0; (n<width); n++)
@@ -2342,7 +2346,7 @@ double calcthread::getValueRomID(const QString &RomID, const QString &Minutes, c
             if (logisdom::isNotNA(V)) return V;
 		}
 	}
-    if (logisdom::isNA(v)) dataError(tr("getValueRomID function didn't find enough valid data")); ResultError
+    if (logisdom::isNA(v)) { dataError(tr("getValueRomID function didn't find enough valid data")); ResultError }
 	return v;
 }
 
@@ -2517,7 +2521,7 @@ double calcthread::getLSumRomID(const QString &RomID, const QString &Minutes, co
     FunctionGetData
     double sum = logisdom::NA;
     double max = Max.toDouble(&ok);
-    if (!ok) syntaxError(tr("Max parameter error ") + Max); ResultError
+    if (!ok) { syntaxError(tr("Max parameter error ") + Max); ResultError }
     for (int n=0; n<data.data_Y.count(); n++)
     {
         double V = data.data_Y.at(n);
@@ -2624,8 +2628,8 @@ double calcthread::getSlopeMeanRomID(const QString &RomID, const QString &Minute
 		double v2 = device->getMainValue(T, deviceLoading, parent);
         if (logisdom::isNotNA(v1) and logisdom::isNotNA(v2)) v = v1 - v2;
 	}
-    if (logisdom::isNA(v)) dataError(tr("SlopeRomID function didn't find enough valid data")); ResultError
-	return v;
+    if (logisdom::isNA(v)) { dataError(tr("SlopeRomID function didn't find enough valid data")); ResultError }
+    return v;
 }
 
 
@@ -2642,8 +2646,8 @@ double calcthread::getSlopeSumPosRomID(const QString &RomID, const QString &Minu
 	double threshold;
     bool OK = false;
 	if (isNumeric(Threshold)) threshold = Threshold.toDouble(&OK);
-		else threshold = toNumeric(Threshold, &OK);
-	if (!OK) syntaxError(tr("Threshold parameter error ") + RomID); ResultError
+        else threshold = toNumeric(Threshold, &OK);
+        if (!OK) { syntaxError(tr("Threshold parameter error ") + RomID); ResultError }
 	FunctionGetData
 	for (int n=0; n<data.data_Y.count(); n++)
 	{
@@ -2697,7 +2701,7 @@ double calcthread::getSlopeSumPosRomID(const QString &RomID, const QString &Minu
             }
 		}
 	}
-    if (logisdom::isNA(sum)) dataError(tr("getSlopeSumPosRomIDProcess function didn't find enough valid data")); ResultError
+    if (logisdom::isNA(sum)) { dataError(tr("getSlopeSumPosRomIDProcess function didn't find enough valid data")); ResultError }
 	return sum;
 }
 
@@ -2715,8 +2719,8 @@ double calcthread::getSlopeSumNegRomID(const QString &RomID, const QString &Minu
 	double threshold;
 	bool OK;
 	if (isNumeric(Threshold)) threshold = Threshold.toDouble(&OK);
-		else threshold = toNumeric(Threshold, &OK);
-	if (!OK) syntaxError(tr("Threshold parameter error ") + RomID); ResultError
+        else threshold = toNumeric(Threshold, &OK);
+        if (!OK) { syntaxError(tr("Threshold parameter error ") + RomID); ResultError }
 	FunctionGetData
 	for (int n=0; n<data.data_Y.count(); n++)
 	{
@@ -2770,7 +2774,7 @@ double calcthread::getSlopeSumNegRomID(const QString &RomID, const QString &Minu
 			}
 		}
 	}
-    if (logisdom::isNA(sum)) dataError(tr("getSlopeSumNegRomIDProcess function didn't find enough valid data")); ResultError
+    if (logisdom::isNA(sum)) { dataError(tr("getSlopeSumNegRomIDProcess function didn't find enough valid data")); ResultError }
 	return sum;
 }
 
@@ -3198,8 +3202,8 @@ double calcthread::getDSP(const QString &RomID, const QString &Poles, const QStr
 {
 	double result = logisdom::NA;
 	QDateTime T;
-	DSPdevice = maison1wirewindow->configwin->DeviceExist(RomID);
-	if (!DSPdevice) dataError(tr("Device not found ") + RomID); ResultError
+    DSPdevice = maison1wirewindow->configwin->DeviceExist(RomID);
+    if (!DSPdevice) { dataError(tr("Device not found ") + RomID); ResultError }
 	double x = logisdom::NA;
 	if (TCalc)
 	{
@@ -3207,16 +3211,16 @@ double calcthread::getDSP(const QString &RomID, const QString &Poles, const QStr
 		x = DSPdevice->getMainValue(T, deviceLoading, parent);
 	}
 	else x = DSPdevice->getMainValue();
-    if (logisdom::isNA(x))  dataError(tr("Device not ready ") + RomID); ResultError
+    if (logisdom::isNA(x)) { dataError(tr("Device not ready ") + RomID); ResultError }
     DSPpole = int(getValueFromP(Poles));
-	if (!(DSPpole < NPOLES)) syntaxError(tr("Pole number too high")); ResultError
+    if (!(DSPpole < NPOLES)) { syntaxError(tr("Pole number too high")); ResultError }
 	DSPGain = getValueFromP(Gain); ResultError
     if ((DSPdevice != lastDSPdevice) or (logisdom::AreNotSame(DSPGain, lastDSPGain)) or (DSPpole != lastDSPpole)) restartDSP = true;
 	lastDSPdevice = DSPdevice;
 	lastDSPGain = DSPGain;
 	lastDSPpole = DSPpole;
-	result = getValueFromP(Polynome); ResultError
-    if (logisdom::isNA(result)) dataValid = false; ResultError
+    result = getValueFromP(Polynome); ResultError
+        if (logisdom::isNA(result)) { dataValid = false; ResultError }
 	scroolDone = false;
 	yv[DSPpole] = result;
 	return result;

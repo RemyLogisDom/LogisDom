@@ -385,7 +385,7 @@ more:
 						devices[n] = device;
 					}
 				}
-                if (devices[n]) devices[n]->setMainValue(qRound(qreal((v*qreal(99)/qreal(255)))), true);
+                if (devices[n]) { devices[n]->setMainValue(qRound(qreal((v*qreal(99)/qreal(255)))), true); }
 				VannePourcent[n] = v;
 			}
 		nextzone:;
@@ -447,8 +447,8 @@ void fts800::timeout()
 	if (retry > 20)
 	{
 		retry = 0;
-		fifoListRemoveFirst();
-		request = None;
+        fifoListRemoveFirst();
+        request = ""; // None;
 		GenError(85, name);
 		reconnecttcp();
 	}

@@ -264,7 +264,11 @@ void ProgramEvent::mousePressEvent(QMouseEvent *event)
 			if (PrgEvntList[n]->TimeMode ==  ProgramEvent::Sunset) found = true;
 		if (!found) contextualmenu.addAction(&ActionAddSunSet);
 		QAction *selection;
-		selection = contextualmenu.exec(event->globalPos());
+#if QT_VERSION < 0x060000
+        selection = contextualmenu.exec(event->globalPos());
+#else
+        selection = contextualmenu.exec(event->globalPosition().toPoint());
+#endif
 		QDateTime now = QDateTime::currentDateTime();
 		if (!parent->isRemoteMode())
 		{
@@ -397,7 +401,11 @@ void ProgramEvent::trier()
 			{
 				if (PrgEvntList[n]->Time.time().secsTo(PrgEvntList[n+1]->Time.time()) < 0)
 				{
-					PrgEvntList.swap(n, n+1);
+#if QT_VERSION < 0x060000
+                    PrgEvntList.swap(n, n+1);
+#else
+                    PrgEvntList.swapItemsAt(n, n+1);
+#endif
 					invert = true;
 				}
 			}

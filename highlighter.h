@@ -28,6 +28,7 @@
 
 #include <QSyntaxHighlighter>
 #include <QVector>
+#include <QRegularExpression>
 
 class QString;
 class QTextDocument;
@@ -61,6 +62,7 @@ protected:
     void highlightBlock(const QString &text);
 private:
 
+#if QT_VERSION < 0x060000
     struct HighlightingRule
     {
         QRegExp pattern;
@@ -73,6 +75,21 @@ private:
 
     QRegExp bracketStartExpression;
     QRegExp bracketEndExpression;
+#else
+    struct HighlightingRule
+    {
+        QRegularExpression pattern;
+        QTextCharFormat format;
+    };
+    QVector<HighlightingRule> highlightingRules;
+
+    QRegularExpression commentStartExpression;
+    QRegularExpression commentEndExpression;
+
+    QRegularExpression bracketStartExpression;
+    QRegularExpression bracketEndExpression;
+
+#endif
 
     QTextCharFormat keywordFormat;
     QTextCharFormat classFormat;

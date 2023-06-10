@@ -189,9 +189,9 @@ dataloader::s_Data data; \
 if (isNumeric(Minutes)) minutes = Minutes.toInt(&ok); \
     else if (!isDate(Minutes, Date, &ok)) minutes = qint64(toNumeric(Minutes, &ok)); \
 if (!ok) minutes = 0; \
-if (!ok) syntaxError(tr("Time parameter error ") + Minutes); ResultError \
+if (!ok) { syntaxError(tr("Time parameter error ") + Minutes); ResultError }\
 onewiredevice *device = checkDevice(RomID); \
-if (!device) dataError(tr("Device not found ") + RomID); ResultError \
+if (!device) { dataError(tr("Device not found ") + RomID); ResultError }\
 if (TCalc) \
 { \
     QDateTime T; \
@@ -277,8 +277,8 @@ else \
     end = begin - (length * 60); \
 } \
 ok = device->getValues(begin, end, deviceLoading, data, parent);\
-if (deviceLoading) dataError(tr("Function didn't find data, device is loading data")); ResultError \
-if (!ok) dataError(tr("Function didn't find data for the gap specified")); ResultError\
+if (deviceLoading) { dataError(tr("Function didn't find data, device is loading data")); ResultError }\
+if (!ok) { dataError(tr("Function didn't find data for the gap specified")); ResultError }\
 
 
 #else
@@ -295,9 +295,9 @@ dataloader::s_Data data; \
 if (isNumeric(Minutes)) minutes = Minutes.toInt(&ok); \
     else if (!isDate(Minutes, Date, &ok)) minutes = (qint32)toNumeric(Minutes, &ok); \
 if (!ok) minutes = 0; \
-if (!ok) syntaxError(tr("Time parameter error ") + Minutes); ResultError \
+if (!ok) { syntaxError(tr("Time parameter error ") + Minutes); ResultError }\
 onewiredevice *device = checkDevice(RomID); \
-if (!device) dataError(tr("Device not found ") + RomID); ResultError \
+if (!device) { dataError(tr("Device not found ") + RomID); ResultError }\
 if (TCalc) \
 { \
     QDateTime T; \
@@ -321,7 +321,7 @@ else \
     end = begin - (minutes * 60); \
 } \
 ok = device->getValues(begin, end, deviceLoading, data, parent);\
-if (deviceLoading) dataError(tr("Function didn't find data, device is loading data")); ResultError \
+if (deviceLoading) { dataError(tr("Function didn't find data, device is loading data")); ResultError }\
 if (!ok) \
 { \
     if (Date.isValid()) textBrowserResult += "\n" + QString("Date is ") + Date.toString(); \
@@ -345,13 +345,13 @@ dataloader::s_Data data; \
 if (isNumeric(Minutes)) minutes = Minutes.toInt(&ok); \
     else if (!isDate(Minutes, Date, &ok)) minutes = (qint32)toNumeric(Minutes, &ok); \
 if (!ok) minutes = 0; \
-if (!ok) syntaxError(tr("Time parameter error ") + Minutes); ResultError \
+if (!ok) { syntaxError(tr("Time parameter error ") + Minutes); ResultError }\
 if (isNumeric(Length)) length = Length.toInt(&ok); \
     else if (!isDate(Length, DateLength, &ok)) length = (int)toNumeric(Length, &ok); \
 if (!ok) length = 0; \
-if (!ok) syntaxError(tr("Length parameter error ") + Length); ResultError \
+if (!ok) { syntaxError(tr("Length parameter error ") + Length); ResultError }\
 onewiredevice *device = checkDevice(RomID); \
-if (!device) dataError(tr("Device not found ") + RomID); ResultError \
+if (!device) { dataError(tr("Device not found ") + RomID); ResultError }\
 if (Date.isValid()) begin = origin.secsTo(QDateTime(Date, QTime(0, 0))); \
 else \
 { \
@@ -383,8 +383,8 @@ else \
     end = begin - (length * 60); \
 } \
 ok = device->getValues(begin, end, deviceLoading, data, parent);\
-if (deviceLoading) dataError(tr("Function didn't find data, device is loading data")); ResultError \
-if (!ok) dataError(tr("Function didn't find data for the gap specified")); ResultError\
+if (deviceLoading) { dataError(tr("Function didn't find data, device is loading data")); ResultError }\
+if (!ok) { dataError(tr("Function didn't find data for the gap specified")); ResultError }\
 
 #endif
 

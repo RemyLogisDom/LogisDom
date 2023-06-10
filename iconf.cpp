@@ -495,7 +495,11 @@ void iconf::setHighlighted(bool state)
 	reloadpict();
 	if (state)
 	{
+#if QT_VERSION < 0x060000
         QPixmap pixmap = *icon->pixmap();
+#else
+        QPixmap pixmap = icon->pixmap();
+#endif
 		QPainter p(&pixmap);
 		QSize s = pixmap.size();
 		int w = s.width();
@@ -628,13 +632,22 @@ void iconf::iconrezise(int percent)
 }
 
 
-
+#if QT_VERSION < 0x060000
 void iconf::textreweight(int fontweight)
 {
     fontText.setWeight(fontweight);
     text->setFont(fontText);
-	text->resize(text->sizeHint());
+    text->resize(text->sizeHint());
 }
+#else
+void iconf::textreweight(QFont::Weight fontweight)
+{
+    fontText.setWeight(fontweight);
+    text->setFont(fontText);
+    text->resize(text->sizeHint());
+}
+#endif
+
 
 
 
@@ -676,13 +689,22 @@ void iconf::textrezise(int fontsize)
 
 
 
-
+#if QT_VERSION < 0x060000
 void iconf::valuereweight(int fontweight)
 {
     fontValue.setWeight(fontweight);
     value->setFont(fontValue);
-	value->resize(value->sizeHint());
+    value->resize(value->sizeHint());
 }
+#else
+void iconf::valuereweight(QFont::Weight fontweight)
+{
+    fontValue.setWeight(fontweight);
+    value->setFont(fontValue);
+    value->resize(value->sizeHint());
+}
+#endif
+
 
 
 
@@ -916,7 +938,11 @@ void iconf::changeIcon(double value)
 
 QRect iconf::icon_rect()
 {
-	QPixmap pixmap = *icon->pixmap();
+#if QT_VERSION < 0x060000
+    QPixmap pixmap = *icon->pixmap();
+#else
+    QPixmap pixmap = icon->pixmap();
+#endif
 	QSize s = pixmap.size();
 	int w = s.width();
 	int h = s.height();

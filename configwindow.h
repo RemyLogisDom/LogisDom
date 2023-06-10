@@ -146,12 +146,12 @@ struct htmlSetup
 	void readconfigfile(QString &configdata);
     void readPathConfig(const QString &configdata);
 	void enablePathConfig();
-    QTextCodec *textCodec;
-    void findCodecs();
-    void setCodec(QString codec = "");
-    QMap<QString, QTextCodec *> codecMap;
-    QList<QTextCodec *> codecs;
-    QString getCodecName();
+    // Qt6 deprecated QTextCodec *textCodec;
+    // Qt6 deprecated void findCodecs();
+    // Qt6 deprecated void setCodec(QString codec = "");
+    // Qt6 deprecated QMap<QString, QTextCodec *> codecMap;
+    // Qt6 deprecated QList<QTextCodec *> codecs;
+    // Qt6 deprecated QString getCodecName();
     void readPngConfig(QString &configdata);
 	void readGeneralConfig(QString &configdata);
 	void readHtmlConfig(QString &configdata);
@@ -254,7 +254,7 @@ private slots:
 	void ZipPathChanged();
 	void BackupPathChanged();
 	void HtmlPathChanged();
-    void codecIndexChanged(int);
+    // Qt 6 void codecIndexChanged(int);
     void sendHtmlMail();
     void updateNow();
     void backupNow();

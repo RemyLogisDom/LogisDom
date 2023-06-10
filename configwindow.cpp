@@ -31,7 +31,7 @@
 #include "graphconfig.h"
 #include "alarmwarn.h"
 #include "errlog.h"
-#include "x10.h"
+//#include "x10.h"
 #include "deveo.h"
 #include "teleinfo.h"
 #include "mbus.h"
@@ -44,7 +44,7 @@
 #include "devfinder.h"
 #include "fts800.h"
 #include "ha7net.h"
-#include "plcbus.h"
+//#include "plcbus.h"
 #include "net1wire.h"
 #include "enocean.h"
 #include "rps2.h"
@@ -52,30 +52,30 @@
 #include "devrps2.h"
 #include "devresol.h"
 #include "server.h"
-#include "formula.h"
+//#include "formula.h"
 #include "connection.h"
 #include "configmanager.h"
 #include "logisdom.h"
 #include "remote.h"
 #include "onewire.h"
-#include "chauffageunit.h"
+//#include "chauffageunit.h"
 #include "programevent.h"
 #include "tableauconfig.h"
-#include "addDaily.h"
+//#include "addDaily.h"
 #include "daily.h"
-#include "vmc.h"
+//#include "vmc.h"
 #include "treehtmlwidget.h"
 #include "htmlbinder.h"
 #include "inputdialog.h"
 #include "messagebox.h"
 #include "configwindow.h"
-#include "mailsender.h"
+//#include "mailsender.h"
 #include "globalvar.h"
-#include "mail/mailserver.h"
-#include "mail/mimemessage.h"
-#include "mail/emailaddress.h"
-#include "mail/mimetext.h"
-#include "mail/serverreply.h"
+//#include "mail/mailserver.h"
+//#include "mail/mimemessage.h"
+//#include "mail/emailaddress.h"
+//#include "mail/mimetext.h"
+//#include "mail/serverreply.h"
 
 
 #ifdef WIN32
@@ -89,8 +89,8 @@
 configwindow::configwindow(logisdom *Parent)
 {
 	ui.setupUi(this);
-    findCodecs();
-    setCodec("");
+    // Qt6 deprecated findCodecs();
+    // Qt6 deprecated setCodec("");
     for (int n=1; n<LastType; n++) ui.comboBoxInterface->addItem(NetTypeStr[n]);
     parent = Parent;
     Extra = ui.tabWidgetGeneral->widget(6);
@@ -170,7 +170,7 @@ configwindow::configwindow(logisdom *Parent)
 	connect(ui.lineEditHtmlDetectorCSS, SIGNAL(textChanged(QString)), this, SLOT(updateHtmlPreview(QString)));
 	connect(ui.lineEditHtmlValueCSS, SIGNAL(textChanged(QString)), this, SLOT(updateHtmlPreview(QString)));
 	connect(ui.lineEditHtmlCommandCSS, SIGNAL(textChanged(QString)), this, SLOT(updateHtmlPreview(QString)));
-    connect(ui.comboBoxCodecs, SIGNAL(currentIndexChanged(int)), this, SLOT(codecIndexChanged(int)));
+    // QT 6 connect(ui.comboBoxCodecs, SIGNAL(currentIndexChanged(int)), this, SLOT(codecIndexChanged(int)));
     connect(ui.lineEditCRCCalc, SIGNAL(textChanged(QString)), this, SLOT(CRCCalChanged(QString)));
     connect(ui.pushButtonAddHtml, SIGNAL(clicked()), this, SLOT(addHtml()));
     connect(ui.radioButtonCRC8, SIGNAL(clicked()), this, SLOT(CRCCLicked()));
@@ -1515,6 +1515,7 @@ onewiredevice *configwindow::NewPluginDevice(const QString &RomID, LogisDomInter
     connect(device, SIGNAL(DeviceConfigChanged(onewiredevice*)), this, SLOT(DeviceConfigChanged(onewiredevice*)));
     connect(device, SIGNAL(setupClick(QWidget*)), parent, SLOT(setPalette(QWidget*)));
     connect(device, SIGNAL(saveDat(QString, QString)), parent, SLOT(saveDat(QString, QString)), Qt::QueuedConnection);
+    if (!interface->acceptCommand(RomID)) { device->SendButton.hide(); device->command.hide(); }
     emit(DeviceChanged(device));
     updateDeviceList();
     return device;
@@ -1596,9 +1597,9 @@ onewiredevice *configwindow::NewDevice(const QString &newRomID, net1wire *master
     else if (family == family2423) device = new ds2423(master, parent, RomID);
     else if (family == family2438) device = new ds2438(master, parent, RomID);
     else if (family == family2450) device = new ds2450(master, parent, RomID);
-    else if (family4 == familyAM12) device = new am12(master, parent, RomID);
-	else if (family4 == familyLM12) device = new lm12(master, parent, RomID);
-	else if (family4 == familyPLCBUS) device = new devpclbus(master, parent, RomID);
+    //else if (family4 == familyAM12) device = new am12(master, parent, RomID);
+    //else if (family4 == familyLM12) device = new lm12(master, parent, RomID);
+    //else if (family4 == familyPLCBUS) device = new devpclbus(master, parent, RomID);
     else if (family8 == familyeoA52001) device = new eoA52001(master, parent, RomID);   // Vanne Chauffage EnOcean
     else if (family8 == familyeoD2010F) device = new eoD2010F(master, parent, RomID);   // Switch 1 voie EnOcean
     else if (family8 == familyeoD20112) device = new eoD20112(master, parent, RomID);   // Switch 2 voies EnOcean
@@ -1860,7 +1861,7 @@ void configwindow::loadVD()
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
     QTextStream in(&file);
-    if (textCodec) in.setCodec(textCodec);
+    // QT 6 if (textCodec) in.setCodec(textCodec);
     QString text = in.readAll();
     file.close();
     QString check = One_Wire_Device;
@@ -1938,7 +1939,7 @@ Retry:
     }
 }
 
-
+/* // Qt6 deprecated
 void configwindow::findCodecs()
 {
     QMap<QString, QTextCodec *> codecMap;
@@ -1971,9 +1972,9 @@ void configwindow::findCodecs()
     ui.comboBoxCodecs->clear();
     foreach (QTextCodec *codec, codecs) ui.comboBoxCodecs->addItem(codec->name(), codec->mibEnum());
 }
+*/
 
-
-
+/* // Qt6 deprecated
 void configwindow::setCodec(QString codec)
 {
     if (codec.isEmpty()) ui.comboBoxCodecs->setCurrentIndex(ui.comboBoxCodecs->findText("UTF-8")); //By default, codec used is the codec of the system.
@@ -1987,8 +1988,7 @@ void configwindow::setCodec(QString codec)
         else textCodec = nullptr;
     }
 }
-
-
+*/
 
 
 void configwindow::addVDev()
@@ -2176,7 +2176,7 @@ Retry :
     net1wire * master;
     if (item == Ha7Net) master = newmaster(nom, Ha7Net);
     else if (item == Ezl50_FTS800) master = newmaster(nom, Ezl50_FTS800);
-    else if (item == Ezl50_X10) master = newmaster(nom, Ezl50_X10);
+    //else if (item == Ezl50_X10) master = newmaster(nom, Ezl50_X10);
     else if (item == Ezl50_PlcBus) master = newmaster(nom, Ezl50_PlcBus);
     else if (item == MultiGest) master = newmaster(nom, MultiGest);
     else if (item == RemoteType) master = newmaster(nom, RemoteType);
@@ -2237,8 +2237,8 @@ net1wire *configwindow::newmaster(QString Name, int Type)
 		case Ha7Net :			master = new ha7net(parent); break;
 		case MBusType :			master = new mbus(parent); break;
 		case Ezl50_FTS800 :		master = new fts800(parent); break;
-        case Ezl50_X10 :		master = new x10(parent); break;
-		case Ezl50_PlcBus :		master = new plcbus(parent); break;
+        //case Ezl50_X10 :		master = new x10(parent); break;
+        //case Ezl50_PlcBus :		master = new plcbus(parent); break;
 		case MultiGest :		master = new ecogest(parent); break;
 		case TeleInfoType :		master = new teleinfo(parent); break;
 		case TCP_RPS2Type :		master = new rps2(parent); break;
@@ -2466,8 +2466,8 @@ void configwindow::readGeneralConfig(QString &configdata)
     int ColWidth = logisdom::getvalue("TreeDevivceColumWidth", strsearch).toInt(&ok);
     if ((ok) && (ColWidth > 20)) OneWireTree.setColumnWidth(0, ColWidth);
     else OneWireTree.setColumnWidth(0, 200);
-    QString codec = logisdom::getvalue("TextCodec", strsearch);
-    if (!codec.isEmpty()) setCodec(codec);
+    // Qt 6 QString codec = logisdom::getvalue("TextCodec", strsearch);
+    //if (!codec.isEmpty()) setCodec(codec);
     SearchLoopEnd
 }
 
@@ -2665,20 +2665,20 @@ void configwindow::sendHtmlMail()
 
 
 
-void configwindow::codecIndexChanged(int index)
+/* Qt 6 void configwindow::codecIndexChanged(int index)
 {
     if (index < 0) textCodec = nullptr;
     if (index < codecs.count()) textCodec = codecs.at(index);
-}
+}*/
 
 
 
-QString configwindow::getCodecName()
+/* Qt 6 QString configwindow::getCodecName()
 {
     QString codec;
     codec.append(ui.comboBoxCodecs->currentText());
     return codec;
-}
+}*/
 
 
 

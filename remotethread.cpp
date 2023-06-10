@@ -50,11 +50,13 @@ remotethread::remotethread(logisdom *Parent)
 
 void remotethread::checkGetConfigFile(tcpData &data)
 {
-	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 	QByteArray DataByte;
 	data.getData(DataByte);
 	QString configStr;
-	configStr = codec->toUnicode(DataByte);
+    //configStr = codec->toUnicode(DataByte);
+    configStr.clear();
+    configStr.append(DataByte);
 	if (configStr.isEmpty())
 	{
 		log = "Data empty\n";
@@ -73,11 +75,13 @@ void remotethread::checkGetConfigFile(tcpData &data)
 
 void remotethread::checkGetDevicesConfig(tcpData &data)
 {
-	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 	QByteArray DataByte;
 	data.getData(DataByte);
 	QString deviceConfig;
-	deviceConfig = codec->toUnicode(DataByte);
+    //deviceConfig = codec->toUnicode(DataByte);
+    deviceConfig.clear();
+    deviceConfig.append(DataByte);
 	if (deviceConfig.isEmpty())
 	{
 		log = "Data empty\n";
@@ -97,11 +101,13 @@ void remotethread::checkGetDevicesConfig(tcpData &data)
 
 void remotethread::checkGetMainValue(tcpData &data)
 {
-	QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    //QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 	QByteArray DataByte;
 	data.getData(DataByte);
 	QString deviceConfig;
-	deviceConfig = codec->toUnicode(DataByte);
+    //deviceConfig = codec->toUnicode(DataByte);
+    deviceConfig.clear();
+    deviceConfig.append(DataByte);
 	if (deviceConfig.isEmpty())
 	{
 		log = "Data empty\n";

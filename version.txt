@@ -2,6 +2,7 @@
     VersionDate = "Février 2023";
     VersionHistory = " \
 a faire\
+quand on change le language les déclenchement ne fonctionnent plus à cause du nom Déclenchement qui est traduit\
 Nombre de ligne Max apres recompilation tableau\
 format heure data file UTC\
 calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\

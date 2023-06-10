@@ -5,9 +5,8 @@ QWT_PATH = $${OUT_PWD}/qwt-6.2.0
 message(QWT path : $$QWT_PATH)
 LIBS += -lqwt -L$${QWT_PATH}/lib
 
-QUAZIP_PATH = $${OUT_PWD}/quazip
+QUAZIP_PATH = $${OUT_PWD}/quazip-0.7.3
 message(Quazip path : $$QUAZIP_PATH)
-#LIBS *= -lquazip1-qt6 -L$${QUAZIP_PATH}/lib
 LIBS *= -lquazip -L$${QUAZIP_PATH}/lib
 
 #QT_NO_DEBUG_OUTPUT

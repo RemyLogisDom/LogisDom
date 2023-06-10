@@ -215,7 +215,8 @@ void remote::traceUpdate(const QString &dataString)
 {
 	QMutexLocker locker(&mutexFifoList);
     QByteArray txt;
-    txt.append(dataString);
+    // Qt 6
+    txt.append(dataString.toLatin1());
     parent->setTitle(dataString);
 	QListWidgetItem *item = new QListWidgetItem(txt);
 	ui.fifolist->addItem(item);
@@ -230,7 +231,8 @@ void remote::traceUpdate(const QString &dataString)
 void remote::getMainValueReady(const QString &dataString)
 {
     QByteArray txt;
-    txt.append(dataString);
+    // Qt 6
+    txt.append(dataString.toLatin1());
     parent->configwin->SetDevicesMainValue(txt, saveRequest);
 	saveRequest = false;
 	GenMsg("getMainValueReady DONE");

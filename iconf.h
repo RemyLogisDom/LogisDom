@@ -144,11 +144,16 @@ public slots:
 private slots:
 	void iconrotate(int angle);
 	void iconrezise(int percent);
-	void textreweight(int fontweight);
+#if QT_VERSION < 0x060000
+    void textreweight(int);
+    void valuereweight(int fontweight);
+#else
+    void textreweight(QFont::Weight);
+    void valuereweight(QFont::Weight);
+#endif
 	void textrestretch(int stretch);
 	void changeText(const QString &txt);
     void specialText(const QString &txt);
-	void valuereweight(int fontweight);
 	void valuerestretch(int stretch);
 	void clickiconchange(int state);
 	void keepratiochanged(int state);

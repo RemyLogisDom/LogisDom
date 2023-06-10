@@ -196,7 +196,7 @@ void SwitchScrollArea::readconfigfile(const QString &configdata)
 
 void SwitchScrollArea::readSwitchConfig(QString &data)
 {
-	QByteArray configdata;
+    QString configdata;
 	configdata.append(data);
 	QString TAG_Begin = Switch_Begin_Mark;
 	QString TAG_End = Switch_End_Mark;
@@ -518,10 +518,13 @@ void SwitchThreshold::readconfigfile(QString &strsearch)
                             if (result.mid(0, 4) == "HEX:")
                             {
                                QByteArray Hex;
-                                Hex.append(result.remove(0, 4));
-                                QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
+                                // Qt 6
+                                Hex.append(result.remove(0, 4).toLatin1());
+                                // Qt 6
+                                //QTextCodec *Utf8Codec = QTextCodec::codecForName("utf-8");
                                 QByteArray F = QByteArray::fromHex(Hex);
-                                result = Utf8Codec->toUnicode(F);
+                                result.clear();
+                                result.append(F); //= Utf8Codec->toUnicode(F);
                             }
                             else
                             {
@@ -1477,15 +1480,15 @@ void SwitchControl::setDevicestate(onewiredevice *device, double state)
 {
     if (!device) return;
     if (SwitchDeviceList.count() > 0)
-        if (device == SwitchDeviceList.first()->device())
-            foreach (devchooser *device, SwitchDeviceList)
+        if (device == SwitchDeviceList.first()->device()) {
+        foreach (devchooser *device, SwitchDeviceList)
                 if (device)
-                    setDevState(device->device(), state);
-    if (CloseDeviceList.count() > 0)
-        if (device == CloseDeviceList.first()->device())
+                    setDevState(device->device(), state); }
+    if (CloseDeviceList.count() > 0) {
+        if (device == CloseDeviceList.first()->device()) {
             foreach (devchooser *device, CloseDeviceList)
                 if (device)
-                    setDevState(device->device(), state);
+                    setDevState(device->device(), state); } }
 }
 
 
@@ -1924,7 +1927,7 @@ void SwitchControl::readconfigfile(QString &data)
     int Logical = logisdom::getvalue("LogicalAND", data).toInt(&ok, 10);
     if (Logical) ui.logicalAND->setChecked(true); else ui.logicalOR->setChecked(true);
     dailyprog->setStrConfig(data);
-	QByteArray configdata;
+    QString configdata;
 	configdata.append(data);
 	QString TAG_Begin = New_Trigger_Begin;
 	QString TAG_End = New_Trigger_End;

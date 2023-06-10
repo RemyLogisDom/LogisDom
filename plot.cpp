@@ -129,7 +129,11 @@ Plot::Plot(QWidget *parent): QwtPlot(parent)
     connect(d_zoomer[0], SIGNAL(zoomed(QRectF)), this, SLOT(zoomed()));
     zoomDelay = 0;
     d_panner = new QwtPlotPanner(canvas());
-    d_panner->setMouseButton(Qt::MidButton);
+#if QT_VERSION < 0x060000
+        d_panner->setMouseButton(Qt::MidButton);
+#else
+        d_panner->setMouseButton(Qt::MiddleButton);
+#endif
     d_picker = new TimeQwtPicker(QwtPlot::xBottom, QwtPlot::yLeft, QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn, canvas());
     d_picker->setRubberBandPen(QColor(Qt::black));
     d_picker->setRubberBand(QwtPicker::RectRubberBand);

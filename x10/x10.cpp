@@ -171,7 +171,7 @@ next:
 	if (order == None)		
 	{	
 		fifoListRemoveFirst();
-		request = None;
+        request = ""; //NetRequestMsg[None];
 		goto next;
 	}
 	switch(order) 
@@ -186,9 +186,9 @@ next:
 		Cm11Status = CM11_WAIT_CHECKSUM;
 		setrequest(req);
 		break;
-	default : 
-		request = None;
-		Cm11Status = CM11_NOTHING;
+    default :
+        request = ""; //NetRequestMsg[None];
+        Cm11Status = CM11_NOTHING;
 		fifoListRemoveFirst();
 		break;
 	}

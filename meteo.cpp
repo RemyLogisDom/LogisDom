@@ -42,7 +42,11 @@ meteo::meteo(QWidget *Parent, logisdom *application) : QScrollArea(Parent)
 	setMinimumSize(MainMinXSize, MainMinYSize);
 	gridLayout = new QGridLayout(MeteoWidget);
 	gridLayout->setSpacing(6);
-	gridLayout->setMargin(9);
+#if QT_VERSION < 0x060000
+        gridLayout->setMargin(9);
+#else
+    gridLayout->setContentsMargins(9, 9, 9, 9);
+#endif
 	setWidget(MeteoWidget);
 	tailleicones = 100;
 	minutes = 99999;

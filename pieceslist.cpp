@@ -121,5 +121,10 @@ void PiecesList::startDrag(Qt::DropActions)
 	drag->setHotSpot(location + QPoint(pixmap.width()/2, pixmap.height()/2));
 	drag->setPixmap(pixmap);
 
-	drag->start(Qt::CopyAction); 
+#if QT_VERSION < 0x060000
+    drag->start(Qt::CopyAction);
+#else
+    drag->exec(Qt::CopyAction);
+#endif
+
 }

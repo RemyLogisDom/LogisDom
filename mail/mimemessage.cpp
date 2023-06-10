@@ -23,6 +23,7 @@ x
 #include <typeinfo>
 
 #include <QDateTime>
+#include <QIODevice>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(SIMPLEMAIL_MIMEMSG, "simplemail.mimemessage")

@@ -265,7 +265,7 @@ more:
 //		int order = getorder(O);
 		QString next = fifoListNext();
         QByteArray req;
-		req.append(getData(next));
+        req.append(getData(next).toLatin1());
 		int Command = data[2] & 0x1F;	// remove extra bit info added for request ACK
 		int feedback = data[2] & ACK_PULSE;
 		int codeH, codeM, state;

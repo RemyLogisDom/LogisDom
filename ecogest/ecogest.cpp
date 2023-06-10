@@ -1440,7 +1440,11 @@ void ecogest::mousePressEvent(QMouseEvent *event)
 		 contextualmenu.addAction(&GetST);
 		 contextualmenu.addAction(&SetNames);
 		 QAction *selection;
-		 selection = contextualmenu.exec(event->globalPos());
+#if QT_VERSION < 0x060000
+         selection = contextualmenu.exec(event->globalPos());
+#else
+         selection = contextualmenu.exec(event->globalPosition().toPoint());
+#endif
 		 if (selection == &ClearRomIDEEprom) clearRomIDEEprom();
 		 if (selection == &RStart) restart();
 		 if (selection == &Upload) OpenUpload();

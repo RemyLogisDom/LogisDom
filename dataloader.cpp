@@ -53,7 +53,8 @@ dataloader::dataloader(logisdom *Parent)
 void dataloader::run()
 {
 	busy = true;
-	QTime t;
+    //QTime t;
+    QElapsedTimer t;
 	t.start();
 	logtxt.clear();
 	if (!begin)
@@ -116,7 +117,7 @@ void dataloader::run()
 	{
 		logtxt += "Device " + romID + QString("  Finished Loading Data done in %1 ms\n").arg(t.elapsed());
 		QFile file(romID + "_LoadData_Log.txt");
-		file.open(QIODevice::WriteOnly | QIODevice::Text);
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
 		QTextStream out(&file);
 		out << logtxt;
 		file.close();
@@ -531,7 +532,8 @@ qint64 dataloader::getIndex(qint64 t, int searchMode, int minDif)
 
 bool dataloader::loadData(int month, int year)
 {
-	QTime t;
+    QElapsedTimer t;
+    //QTime t;
 	t.start();
 	bool dataLoaded = false;
 	QDateTime T;
@@ -554,7 +556,7 @@ bool dataloader::loadData(int month, int year)
 	if (logLoadData) logtxt += "zipfilename = " + zipFileName + "\n";
 	if (file.exists())
 	{
-		if (file.open(QIODevice::ReadOnly))
+        if (file.open(QIODevice::ReadOnly))
 		{
 			QTextStream in;
 			in.setDevice(&file);
@@ -566,7 +568,7 @@ bool dataloader::loadData(int month, int year)
 	}
 	else if (zatfile.exists())
 	{
-		if (zatfile.open(QIODevice::ReadOnly))
+        if (zatfile.open(QIODevice::ReadOnly))
 		{
 			QByteArray compresseddata = zatfile.readAll();
 			cmpdata = qUncompress(compresseddata);
@@ -586,8 +588,8 @@ bool dataloader::loadData(int month, int year)
 		QuaZip zip(zipFileName);
 		if(zip.open(QuaZip::mdUnzip))
 		{
-            QTextCodec *codec = zip.getFileNameCodec();
-            zip.setFileNameCodec(codec);
+            //QTextCodec *codec = zip.getFileNameCodec();
+            //zip.setFileNameCodec(codec);
             //zip.setFileNameCodec("IBM866");
 			QuaZipFileInfo info;
 			QuaZipFile zipFile(&zip);
@@ -601,7 +603,11 @@ bool dataloader::loadData(int month, int year)
 						name = zipFile.getActualFileName();
 						if (name == filename + dat_ext)
 						{
-							if(zipFile.open(QIODevice::ReadOnly))
+#if QT_VERSION < 0x060000
+                            if(zipFile.open(QIODevice::ReadOnly))
+#else
+                            if(zipFile.open(QIODeviceBase::ReadOnly))
+#endif
 							{
 								QBuffer data;
 								data.open(QIODevice::ReadWrite);

@@ -424,7 +424,11 @@ void daily::sort()
 			{
 				if (dailyList[n]->time().secsTo(dailyList[n+1]->time()) < 0)
 				{
+#if QT_VERSION < 0x060000
                     dailyList.swap(n, n+1);
+#else
+                    dailyList.swapItemsAt(n, n+1);
+#endif
 					invert = true;
 				}
 			}

@@ -17,7 +17,7 @@
 #define MAILSERVER_H
 
 #include <QObject>
-
+#include <QSslError>
 #include "smtpexports.h"
 
 class QSslError;
