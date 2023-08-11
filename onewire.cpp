@@ -466,42 +466,66 @@ void onewiredevice::set_Off()
 void onewiredevice::On(bool)
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + "=on");
+        QString command = romid + "=on";
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
 void onewiredevice::Off(bool)
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + "=off");
+        QString command = romid + "=off";
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
 void onewiredevice::Dim(bool)
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + "=dim");
+        QString command = romid + "=dim";
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
 void onewiredevice::Bright(bool)
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + "=bright");
+        QString command = romid + "=bright";
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
 void onewiredevice::Bright(int v, bool)
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + QString("=bright=%1").arg(v));
+        QString command = romid + QString("=bright=%1").arg(v);
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
 void onewiredevice::Sleep()
 {
     if (plugin_interface) {
-        plugin_interface->setStatus(romid + "=sleep");
+        QString command = romid + "=sleep";
+        if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
+        lastCommandCount = 0;
+        lastCommand = command;
+        plugin_interface->setStatus(command);
     }
 }
 
@@ -1350,7 +1374,7 @@ QString onewiredevice::MainValueToStrNoWarning()
 }
 
 
-// Plante quand max valuie n'est pas bon
+// Plante quand max value n'est pas bon
 
 void onewiredevice::assignMainValue(double value)
 {

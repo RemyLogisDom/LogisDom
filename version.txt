@@ -1,5 +1,5 @@
-﻿    Version = "2.302 (Qt " QT_VERSION_STR ")";
-    VersionDate = "Février 2023";
+﻿    Version = "2.308 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Aout 2023";
     VersionHistory = " \
 a faire\
 quand on change le language les déclenchement ne fonctionnent plus à cause du nom Déclenchement qui est traduit\
@@ -7,6 +7,12 @@ Nombre de ligne Max apres recompilation tableau\
 format heure data file UTC\
 calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\
 bad link si pas de capteur selectionné si on met seulement mode de déclenchement en lien\
+    Version 2.308\
+        - modification temporisateur pour declenchement pour fonction lib on wire on/off/dim/bright\
+    Version 2.306\
+        - supression Qt::WA_DeleteOnClose dans iconf et icont\
+        - ajout nom fichier dans descriptif actualFileName.setText(path) ligne 489\
+        - plantage dans setValue de iconf ...\
     Version 2.302\
         - Correctif sendSMS\
     Version 2.209\

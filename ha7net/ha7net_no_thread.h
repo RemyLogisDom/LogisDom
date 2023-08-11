@@ -88,6 +88,7 @@ private:
 private slots:
 	void convertSlot();
     void httpFinished();
+    void httpFinished(QNetworkReply *reply);
     void fifonext();
     void timerconvertout();
 	void Ha7Netconfig();

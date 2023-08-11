@@ -1177,7 +1177,7 @@ void configwindow::LectureAll()
 		{
 			devicePtArray.at(n)->lecture();
 			QCoreApplication::processEvents(QEventLoop::AllEvents);
-		}
+        }
 }
 
 
@@ -1720,9 +1720,9 @@ void configwindow::updateDeviceList()
 
 void configwindow::setPalette(int index)
 {
-	if (index == -1) return;
-	if (index < devicePtArray.count())
-		parent->setPalette(&devicePtArray[index]->setup);
+    if (index == -1) return;
+    if (index < devicePtArray.count())
+        parent->setPalette(&devicePtArray[index]->setup);
 }
 
 
@@ -1731,21 +1731,21 @@ void configwindow::setPalette(int index)
 
 void configwindow::setTreePalette(QTreeWidgetItem *item, int)
 {
-	if (!item) return;
-	bool ok;
-	int index = item->text(2).toInt(&ok);
-	if (!ok) return;
-	if (index < devicePtArray.count())
-		parent->setPalette(&devicePtArray[index]->setup);
+    if (!item) return;
+    bool ok;
+    int index = item->text(2).toInt(&ok);
+    if (!ok) return;
+    if (index < devicePtArray.count())
+        parent->setPalette(&devicePtArray[index]->setup);
 }
 
 
 
 void configwindow::setPalette(QListWidgetItem* item)
 {
-	for (int n=0; n<OneWireList.count(); n++)
-		if (item == OneWireList.item(n))
-			parent->setPalette(&devicePtArray[n]->setup);
+    for (int n=0; n<OneWireList.count(); n++)
+        if (item == OneWireList.item(n))
+            parent->setPalette(&devicePtArray[n]->setup);
 }
 
 

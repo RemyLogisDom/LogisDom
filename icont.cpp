@@ -232,7 +232,7 @@ void icont::settxt(QString name, QPoint pos)
 	text->resize(text->sizeHint());
 	text->move(pos);
 	text->show();
-	text->setAttribute(Qt::WA_DeleteOnClose);
+    //text->setAttribute(Qt::WA_DeleteOnClose);
 	Text.setText(name);
     connect(&Text, SIGNAL(textChanged()), this, SLOT(changeText()));
 }

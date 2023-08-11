@@ -81,7 +81,7 @@ graph::graph(logisdom *Parent, QString &name)
 	//HScale.setPrefix (tr("Scale : "));
 	HScale.setRange (1, 999);
 	HOffset.setPrefix (tr("Offset : "));
-	HOffset.setRange (0, 9999);
+    HOffset.setRange (0, 9999);
 	HUnit.setCurrentIndex(Jours);
     rotation.setPrefix (tr("Rotation : "));
 	rotation.setRange (0, 90);

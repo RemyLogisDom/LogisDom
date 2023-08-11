@@ -29,6 +29,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QColorDialog>
+#include <QDateTime>
 #include <QtGui>
 #include <QtNetwork>
 #include <QtCore>
@@ -465,7 +466,6 @@ void logisdom::configShow(bool)
     showconfig();
 }
 
-
 void logisdom::graphicShow(bool)
 {
     if (palette.isHidden()) { palette.show(); palette.raise(); }
@@ -501,8 +501,8 @@ void logisdom::PaletteHide(bool hide)
 {
 	if (hide) palette.hide(); else
 	{
-	    palette.show();
-	    palette.raise();
+        palette.show();
+        palette.raise();
 	}
 }
 
@@ -543,7 +543,7 @@ void logisdom::setPalette(QWidget *setup)
     }
     if (setup) paletteLayout->addWidget(setup, 1, 0, 1, PaletteWidth);
 	if (setup) setup->show();
-	palette.raise();
+    palette.raise();
 }
 
 
@@ -2739,7 +2739,7 @@ void logisdom::newPluginDevice(LogisDomInterface *interface, QString RomID)
     onewiredevice *device = configwin->DeviceExist(RomID);
     if (!device) device = configwin->NewPluginDevice(RomID, interface);
     showPalette();
-    if (device) setPalette(&device->setup);
+    //if (device) setPalette(&device->setup);
 }
 
 
@@ -3283,7 +3283,7 @@ void logisdom::readconfigfile(const QString &configdata)
     if (ok_x && ok_y && ok_w && ok_h) palette.setGeometry(x, y, w, h);
 
 	h = getvalue("Palette_Hidden", strsearch).toInt(&ok_h, 10);
-	if (ok_h && h) palette.hide(); else palette.show();
+    if (ok_h && h) palette.hide(); else palette.show();
     h = getvalue("paletteOnTop", strsearch).toInt(&ok_h, 10);
     Qt::WindowFlags flags = palette.windowFlags();
     disconnect(&alwaysOnTop, SIGNAL(toggled(bool)), this, SLOT(onAllwaysTop(bool)));

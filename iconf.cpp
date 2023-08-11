@@ -484,8 +484,9 @@ void iconf::setpict(QString pict, QPoint pos)
     icon->resize(pixmap.size());
 	icon->move(pos);
 	icon->show();
-	icon->setAttribute(Qt::WA_DeleteOnClose);
-	icon->setAccessibleName(path);
+    //icon->setAttribute(Qt::WA_DeleteOnClose);
+    icon->setAccessibleName(path);
+    actualFileName.setText(path);
 }
 
 
@@ -743,7 +744,7 @@ void iconf::settxt(QString name, QPoint pos)
 	text->resize(text->sizeHint());
 	text->move(pos);
 	text->show();
-	text->setAttribute(Qt::WA_DeleteOnClose);
+    //text->setAttribute(Qt::WA_DeleteOnClose);
 	Text.setText(name);
 	connect(&Text, SIGNAL(textChanged(const QString&)), this, SLOT(changeText(const QString&)));
 }
@@ -794,7 +795,7 @@ void iconf::setvalue(QString Romid, QPoint pos)
 	value->move(pos);
     value->resize(value->sizeHint());
     value->show();
-	value->setAttribute(Qt::WA_DeleteOnClose);
+    //value->setAttribute(Qt::WA_DeleteOnClose);
 	romid = Romid;
 }
 

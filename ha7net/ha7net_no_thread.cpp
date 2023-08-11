@@ -558,6 +558,13 @@ void ha7net::startRequest(QUrl url)
 {
     reply = qnam.get(QNetworkRequest(url));
     connect(reply, SIGNAL(finished()), this, SLOT(httpFinished()));
+    //connect(reply, SIGNAL(finished(QNetworkReply *reply)), this, SLOT(httpFinished(QNetworkReply *reply)));
+}
+
+
+
+void ha7net::httpFinished(QNetworkReply *)
+{
 }
 
 

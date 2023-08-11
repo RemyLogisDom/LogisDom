@@ -222,10 +222,10 @@ private slots:
 	void NewClient(Connection*);
     void newRequest(QString);
     void ClientisGone(Connection*);
-	void setPalette(int);
-	void setTreePalette(QTreeWidgetItem*, int);
-	void setPalette(QListWidgetItem*);
-	void pngEnabled(int state);
+    void setPalette(int index);
+    void setTreePalette(QTreeWidgetItem *item, int);
+    void setPalette(QListWidgetItem* item);
+    void pngEnabled(int state);
 	void htmlEnabled(int state);
 	void pngResize(int state);
 	void treeViewSwitch(int state);
