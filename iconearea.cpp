@@ -63,6 +63,8 @@ IconeArea::IconeArea(logisdom *Parent)
 
 IconeArea::~IconeArea()
 {
+    for (int index=0; index<IconList.count(); index++) delete IconList.at(index);
+    for (int index=0; index<TextList.count(); index++) delete TextList.at(index);
 }
 
 
@@ -786,9 +788,6 @@ void IconeArea::getIconHtml(QTextStream &out, iconf *item, int id)
     if (r != 0) name.prepend(QString("R=%1.").arg(r));
     out << QString("<div id=\"wb_Image%1\" style=\"position:absolute;left:%2px;top:%3px;width:%4px;height:%5px;z-index:%6;\"><img src=\"").arg(id).arg(item->icon->pos().x()).arg(item->icon->pos().y()).arg(item->icon->width()).arg(item->icon->height()).arg(id)\
     + name + QString("\" id=\"Image%6\" alt=\"\" style=\"width:%7px;height:%8px;\"></div>\n").arg(id).arg(item->icon->width()).arg(item->icon->height());
-    //    out << (QString("<input type=\"image\" name=\"ImageName%1\" id=%2 src=\"").arg(id).arg(id) +\
-    //    name + QString("\" style=\"position:absolute;left:%1px;top:%2px;width:%3px;height:%4px;z-index:1;\">\n")\
-    //    .arg(item->icon->pos().x()).arg(item->icon->pos().y()).arg(item->icon->width()).arg(item->icon->height()));
 }
 
 

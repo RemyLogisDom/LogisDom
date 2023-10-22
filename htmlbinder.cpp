@@ -24,7 +24,6 @@
 
 #include "globalvar.h"
 #include "logisdom.h"
-#include "configmanager.h"
 #include "connection.h"
 #include "configwindow.h"
 #include "server.h"
@@ -41,7 +40,7 @@ htmlBinder::htmlBinder(logisdom *Parent, QTreeWidgetItem *ParentItem)
 	widgetSetup();
 	htmlMenuList.setSortingEnabled(true);
 	//setParameter("ID", ID); for debug only
-	connect(&htmlMenuList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(clickHtmlList(QListWidgetItem *)));
+    connect(&htmlMenuList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(clickHtmlList(QListWidgetItem*)));
 }
 
 
@@ -56,7 +55,7 @@ htmlBinder::htmlBinder(logisdom *Parent, QString MainMenu, QTreeWidgetItem *Pare
 	if (treeItem) treeItem->setText(0, MainMenu);
 	widgetSetup();
 	//setParameter("ID", ID); for debug only
-	connect(&htmlMenuList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(clickHtmlList(QListWidgetItem *)));
+    connect(&htmlMenuList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(clickHtmlList(QListWidgetItem*)));
 }
 
 
@@ -65,6 +64,8 @@ htmlBinder::htmlBinder(logisdom *Parent, QString MainMenu, QTreeWidgetItem *Pare
 
 htmlBinder::~htmlBinder()
 {
+    htmlMenuList.clear();
+    for (int n=0; n<treeItems.count(); n++) delete treeItems.at(n);
 }
 
 
@@ -139,9 +140,9 @@ void htmlBinder::clickHtmlList(QListWidgetItem *item)
 void htmlBinder::emitSendConfigStr(const QString &command)
 {
 	//GenMsg("Binder emit  " + ID + "  " + command);
-	QString T = command;
-	emit(sendConfigStr(T));
-	emit(remoteCommand(T));
+    QString T = command;
+    emit(sendConfigStr(T));
+    emit(remoteCommand(T));
 }
 
 
@@ -453,7 +454,7 @@ QString htmlBinder::getHtmlCommand(QTreeWidgetItem *item, QString &WebID, int Pr
 
 void htmlBinder::addParameterCommand(QString ParameterName, QString display, QString html)
 {
-	QTreeWidgetItem * item = nullptr;
+    QTreeWidgetItem *item = nullptr;
 	for (int n=0; n<treeItem->childCount(); n++)
 	{
 		if (treeItem->child(n)->text(0) == ParameterName) item = treeItem->child(n);
@@ -466,12 +467,14 @@ void htmlBinder::addParameterCommand(QString ParameterName, QString display, QSt
     }
     if (item)
     {
-        QTreeWidgetItem * childItem = nullptr;
+        QTreeWidgetItem *childItem = nullptr;
         for (int n=0; n<item->childCount(); n++)
         {
             if (item->child(n)->text(0) == display) childItem = item->child(n);
         }
-        if (!childItem)	childItem = new QTreeWidgetItem(item, 1);
+        if (!childItem)	{
+            childItem = new QTreeWidgetItem(item, 1);
+            treeItems.append(childItem); }
         if (childItem)
         {
             childItem->setText(0, display);

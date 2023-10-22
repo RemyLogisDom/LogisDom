@@ -28,7 +28,6 @@
 #include "logisdom.h"
 #include "configwindow.h"
 #include "onewire.h"
-#include "devchooser.h"
 #include "remote.h"
 #include "formula.h"
 #include "iconearea.h"
@@ -58,7 +57,7 @@ iconf::iconf(QWidget *parent, IconeArea *lparent)
 	int index = 0;
     //setupLayout.setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	setupLayout.addWidget(&Text, index++, 0, 1, logisdom::PaletteWidth);
-	connect(&Text, SIGNAL(textChanged(const QString&)), this, SLOT(changeText(const QString&)));
+    connect(&Text, SIGNAL(textChanged(QString)), this, SLOT(changeText(QString)));
 	keepRatio.setText(tr("Keep ratio"));
 	keepRatio.setChecked(true);
 	setupLayout.addWidget(&keepRatio, index, 0, 1, logisdom::PaletteWidth/2);

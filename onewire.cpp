@@ -25,16 +25,11 @@
 #include <QtWidgets/QMessageBox>
 
 #include <QtCore>
-#include "alarmwarn.h"
 #include "configwindow.h"
-#include "calcthread.h"
 #include "logisdom.h"
 #include "onewire.h"
-#include "server.h"
 #include "net1wire.h"
-#include "iconf.h"
 #include "remote.h"
-#include "connection.h"
 #include "interval.h"
 #include "htmlbinder.h"
 #include "inputdialog.h"
@@ -44,10 +39,7 @@
 #include "quazipfile.h"
 
 #include "qwt_plot.h"
-#include "qwt_plot_curve.h"
 #include "qwt_plot_picker.h"
-#include "curve.h"
-#include "graph.h"
 #include "graphconfig.h"
 
 #include "globalvar.h"
@@ -173,7 +165,10 @@ onewiredevice::onewiredevice(net1wire *Master, logisdom *Parent, QString RomID)
 	}
 	RenameButton.setToolTip(tr("No data Loaded"));
 	dataLoader->romID = RomID;
-	dataLoader->RemoteConnection = parent->RemoteConnection;
+    dataLoader->RemoteConnection = parent->RemoteConnection;
+    saveDelay.setSingleShot(true);
+    connect(&saveDelay, SIGNAL(timeout()), this, SLOT(saveEmit()));
+
 }
 
 
@@ -438,16 +433,6 @@ void onewiredevice::send_Value(double)
 }
 
 
-void onewiredevice::setHouseCode(int, int)
-{
-}
-
-
-void onewiredevice::setHouseCode(QString, QString)
-{
-}
-
-
 void onewiredevice::set_On()
 {
 	if (parent) On(!parent->isRemoteMode());
@@ -587,23 +572,6 @@ QString onewiredevice::getunit()
 {
 	return Unit.text();
 }
-
-
-
-int onewiredevice::getHouseCode()
-{
-	if ((HouseCode > 0) and (HouseCode < 16)) return HouseCode;
-	else return 0;
-}
-
-
-
-int onewiredevice::getModuleCode()
-{
-	if ((ModuleCode > 0) and (ModuleCode < 16)) return ModuleCode;
-	else return 0;
-}
-
 
 
 
@@ -1078,11 +1046,14 @@ void onewiredevice::savevalue(const QDateTime &now, const double &V, bool interv
     if (isReprocessing()) return;
 	QMutexLocker locker(&mutexGet);
     if (int(V) == logisdom::NA) return;
-    if (!isAutoSave())
-	{
-		if (intervalCheck)
-			if (!saveInterval.isitnow()) return;
-	}
+    if (!saveDelay.isActive())
+    {
+        if (!isAutoSave())
+        {
+            if (intervalCheck)
+                if (!saveInterval.isitnow()) return;
+        }
+    }
     if (logisdom::isNotNA(V) and ((skip85.isChecked() && logisdom::AreNotSame(V, 85)) or (!skip85.isChecked())))
 	{
 		if (parent->graphconfigwin) parent->graphconfigwin->AddData(V, now, romid);
@@ -1099,82 +1070,39 @@ void onewiredevice::savevalue(const QDateTime &now, const double &V, bool interv
 		parent->logfile("Dir " + parent->getrepertoiredat() + " created");
 	}
     QString filename = QString(parent->getrepertoiredat()) + romid + "_" + now.toString("MM-yyyy") + dat_ext;
-    QString filenameThread = romid + "_" + now.toString("MM-yyyy") + dat_ext;
-    /*QFile file(filename);
-    if (!file.exists())
-	{
-		newFile = true;
-		// create new file
-		if(file.open(QIODevice::Append | QIODevice::Text))
-		{
-			QTextStream out(&file);
-                        out << "// Version 1\n";
-                        datFileVersion = 1;
-                        //out << "// Version 2\n";
-                        //datFileVersion = 2;
-                        file.close();
-                }
-		else
-		{
-			parent->logfile("cannot open file " + filename);
-			return;
-		}
-    }
-    else if (datFileVersion < 0)
-    {
-        // open file to check version
-        if (!file.open(QIODevice::ReadOnly))
-        {
-                parent->logfile("cannot read " + filename + " to check version, set to version 2");
-                datFileVersion = 1;
-                //datFileVersion = 2;
-        }
-        else
-        {
-            QString line = file.readLine();
-            if (line.contains("Version 1")) datFileVersion = 1;
-            else datFileVersion = 1;
-            //else datFileVersion = 2;
-            file.close();
-        }
-    }
-	if (!file.open(QIODevice::Append | QIODevice::Text))
-	{
-		parent->logfile("cannot write to " + filename);
-		return;
-    }*/
-    //QTextStream out(&file);
-	QString strOut;
+    filenameSaveThread = romid + "_" + now.toString("MM-yyyy") + dat_ext;
+    //qDebug() << "saveValue RomID:" + romid + " = " + QString("%1").arg(V, 0, 'f', Decimal.value());
 	bool checkLastsave = false;
 	if (lastSaveIndex < 0) checkLastsave = true;
 	int currentIndex = (now.date().month() * 31 * 24) + (now.date().day() * 24) + now.time().hour();
 	if (currentIndex != lastSaveIndex) checkLastsave = true;
     if (firstsave || checkLastsave || (now.time().minute() == 0))
     {
-        strOut = now.toString("(dd)[HH:mm:ss]") + now.toUTC().toString("{dd:HH:mm:ss}") + "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'" + "\n";
-        // UTC strOut = now.toUTC().toString("(dd)[HH:mm:ss]") + "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'" + "\n";
+        strOutSave = now.toString("(dd)[HH:mm:ss]") + now.toUTC().toString("{dd:HH:mm:ss}") + "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'" + "\n";
+        // UTC strOutSave = now.toUTC().toString("(dd)[HH:mm:ss]") + "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'" + "\n";
     }
 	else
 	{
-		strOut = now.toString("[mm:ss]");
-        if (logisdom::AreSame(lastsavevalue, V)) strOut += "=";
-		else strOut += "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'";
-		strOut += "\n";
+        strOutSave = now.toString("[mm:ss]");
+        if (logisdom::AreSame(lastsavevalue, V)) strOutSave += "=";
+        else strOutSave += "'" + QString("%1").arg(V, 0, 'f', Decimal.value()) + "'";
+        strOutSave += "\n";
 	}
-	if (!strOut.isEmpty())
+    if (!strOutSave.isEmpty())
 	{
-        //out << strOut;
-        emit(saveDat(filenameThread, strOut));
 		firstsave = false;
 		lastSaveIndex = currentIndex;
-	}
-    //file.close();
+        if (htmlBindControler) { saveDelay.start(2000); }
+        else emit(saveDat(filenameSaveThread, strOutSave));
+    }
 	lastsavevalue = V;
 }
 
 
-
-
+void onewiredevice::saveEmit()
+{
+    emit(saveDat(filenameSaveThread, strOutSave));
+}
 
 
 double onewiredevice::calcultemperature(const QString &)
@@ -1392,7 +1320,6 @@ void onewiredevice::assignMainValue(double value)
                 if ((lastCommand == command) && (lastCommandCount++ < 10)) return;
                 lastCommandCount = 0;
                 lastCommand = command;
-            //qDebug() << QDateTime::currentDateTime().toString() + "  " + romid + QString("=%1").arg(value, 0, 'f', 3);
             plugin_interface->setStatus(command); }
         else {
             assignMainValueLocal(value); }

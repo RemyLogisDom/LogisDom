@@ -47,7 +47,7 @@ public:
 	void GetConfigStr(QString &str);
 	bool isVirtualFamily();
 	bool saveLecture;
-	formula *FormulCalc;
+    formula *FormulCalc = nullptr;
 	void stopAll();
 	bool isReprocessing();
 	int meantimeCalc;

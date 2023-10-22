@@ -24,7 +24,6 @@
 
 #include <QtWidgets/QFileDialog>
 #include "globalvar.h"
-#include "server.h"
 #include "errlog.h"
 #include "alarmwarn.h"
 #include "interval.h"
@@ -41,7 +40,7 @@ devvirtual::devvirtual(net1wire *Master, logisdom *Parent, QString RomID) : onew
     initialCalcul = true;
     deviceLoading = false;
     ui.gridLayout->addWidget(&trafficUi, 2, 1, 1, 2);
-    FormulCalc = new formula(parent);
+    FormulCalc = new formula(Parent);
     FormulCalc->deviceParent = this;
     saveLecture = false;
     lastsavevalue = logisdom::NA;
@@ -426,7 +425,7 @@ void devvirtual::setconfig(const QString &strsearch)
                         {
                            QByteArray Hex;
 #if QT_VERSION < 0x060000
-                           Hex.append(result.remove(0, 4));
+                           Hex.append(result.remove(0, 4).toUtf8());
 #else
                            Hex.append(result.remove(0, 4).toLatin1());
 #endif

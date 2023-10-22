@@ -41,11 +41,11 @@ friend class calcthread;
 public:
 	formula(logisdom *Parent);
 	~formula();
-	reprocessthread *reprossthread;
-	calcthread *calcth;
-    QThread *thread;
-    QThread *threadr;
-    Highlighter *highlighter;
+    reprocessthread *reprossthread = nullptr;
+    calcthread *calcth = nullptr;
+    QThread *thread = nullptr;
+    QThread *threadr = nullptr;
+    Highlighter *highlighter = nullptr;
     QTimer progressTimer;
 	void stopreProcess();
 	void stopAll();

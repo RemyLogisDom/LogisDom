@@ -384,6 +384,7 @@ logisdom::~logisdom()
 	delete ProgEventArea;
 	delete MeteoArea;
 	delete SwitchArea;
+    treeItemList.clear();
 }
 
 
@@ -2762,11 +2763,13 @@ void logisdom::pluginUpdateNames(LogisDomInterface* interface, QString str)
 
 void logisdom::newPluginDeviceValue(QString RomID, QString Value)
 {
+    //qDebug() << "newPluginDeviceValue" + RomID + " " + Value;
     onewiredevice *device = configwin->DeviceExist(RomID);
     bool ok;
     double V = Value.toDouble(&ok);
     if (device) if (ok) device->setPluginMainValue(V);
 }
+
 
 
 void logisdom::MainTreeClick(const QPoint &pos)

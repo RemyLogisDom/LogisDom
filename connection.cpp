@@ -41,8 +41,6 @@
 #include "onewire.h"
 #include "programevent.h"
 #include "tcpdata.h"
-#include "quazip.h"
-#include "quazipfile.h"
 #include "logisdom.h"
 #include "connection.h"
 
@@ -57,6 +55,8 @@ Connection::Connection(QTcpSocket *socket, Server *parent)
     connect(tcp, SIGNAL(readyRead()), this, SLOT(processReadyRead()));
 	Privilege = Server::NoRigths;
 	isHttp = false;
+    QHostAddress adr(tcp->peerAddress().toIPv4Address());
+    ip = adr.toString();
 }
 
 
@@ -64,6 +64,7 @@ Connection::Connection(QTcpSocket *socket, Server *parent)
 
 Connection::~Connection()
 {
+    if (tcp) delete tcp; // correctif bug fuite memoire
 }
 
 
@@ -155,12 +156,10 @@ void Connection::sendScratchPads()
 void Connection::sendMainValue()
 {
 	if (Privilege == Server::NoRigths) return;
-    // QByteArray configdata, rawdata;     // deprecated update 06-10-21
     QString configdata, rawdata;
 	QString str;
 	maison1wirewindow->configwin->GetDevicesScratchpad(str);
 	rawdata.append(str);
-	//configdata.append(qCompress(rawdata));
 	configdata.append(rawdata);
     QString header;
 	header.append(headerStart"\n");
@@ -185,6 +184,9 @@ void Connection::extractrequest(QByteArray &data, QString *str)
     str->append("Content-Type: text/html; charset=UTF-8\r\n\r\n");
     QString txt;
 	QString Data = QUrl::fromPercentEncoding(data);
+    if (Data.isEmpty()) {
+
+    }
     //qDebug() << Data;
     if (Data.startsWith("index.htm"))
     {
@@ -197,11 +199,6 @@ void Connection::extractrequest(QByteArray &data, QString *str)
         return;
     }
 	QString request = logisdom::getvalue(CRequest, Data);
-    QString log;
-    QHostAddress adr(tcp->peerAddress().toIPv4Address());
-    QDateTime now = QDateTime::currentDateTime();
-    log.append(now.toString("HH:mm:ss  :  ") + "open socket : " + adr.toString() + " " + Data);
-    emit(newRequest(log));
 	QString user = logisdom::getvalue(CUser, Data);
 	QString password = logisdom::getvalue(CPsw, Data);
 	QString id = logisdom::getvalue(CUId, Data);
@@ -489,6 +486,10 @@ more:
     data = tcp->readAll();
 	QString str;
 	str.append(data);
+    QString log;
+    QDateTime now = QDateTime::currentDateTime();
+    log.append(now.toString("HH:mm:ss  :  ") +  ip + " : " + data);
+    emit(newRequest(log));
 	maison1wirewindow->GenMsg(str);
     maison1wirewindow->GenMsg("Local address : " + tcp->localAddress().toString());
     maison1wirewindow->GenMsg("Peer address : " + tcp->peerAddress().toString());
@@ -508,31 +509,23 @@ more:
 			{
 				QByteArray link = data.mid(begin + 5, end - begin - 5);
 				QString strHtml;
-                                //GenMsg("HTTP Request = " + link);
-                                extractrequest(link, &strHtml);
+                //GenMsg("HTTP Request = " + link);
+                extractrequest(link, &strHtml);
 				data.clear();
-                //data.append(strHtml.toLocal8Bit());
                 data.append(strHtml.toUtf8());
-                                try				\
-                                {
-                                    if (tcp->isValid()) tcp->write(data);
-                                    tcp->waitForBytesWritten(10000);
-                                    tcp->disconnectFromHost();
-				}
-				catch(...)
-				{
-					QDateTime now = QDateTime::currentDateTime();
-					QFile file("exception.log");
-					if (file.open(QIODevice::Append | QIODevice::Text))
-					{
-						QTextStream out(&file);
-						out << now.toString() + "  Exception :  " + data + "\n";
-						file.close();
-					}
-                }
+                if (tcp->isValid()) tcp->write(data);
+                tcp->waitForBytesWritten(10000);
+                tcp->disconnectFromHost();
 			}
-		} 
-		else maison1wirewindow->GenMsg("http request fail");
+        }
+        else {
+
+            maison1wirewindow->GenMsg("http request fail");
+            QString ban;
+            ban.append("ban:" + ip);
+            emit(newRequest(ban));
+            tcp->disconnectFromHost();
+        }
 		return;
 	}
 	order = getOrder(extract);
@@ -739,9 +732,9 @@ more:
 			QByteArray header;
 			header.append(headerStart"\n");
 #if QT_VERSION < 0x060000
-            header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
-            header.append(logisdom::saveformat(DataSize, "0"));
-            header.append(logisdom::saveformat(RequestStr, order));
+            header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toUtf8());
+            header.append(logisdom::saveformat(DataSize, "0").toUtf8());
+            header.append(logisdom::saveformat(RequestStr, order).toUtf8());
 #else
             header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
             header.append(logisdom::saveformat(DataSize, "0").toLatin1());
@@ -914,9 +907,9 @@ more:
 		QByteArray header;
 		header.append(headerStart"\n");
 #if QT_VERSION < 0x060000
-        header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr));
-        header.append(logisdom::saveformat(DataSize, "0"));
-        header.append(logisdom::saveformat(RequestStr, order));
+        header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toUtf8());
+        header.append(logisdom::saveformat(DataSize, "0").toUtf8());
+        header.append(logisdom::saveformat(RequestStr, order).toUtf8());
 #else
         header.append(logisdom::saveformat(DataTypeStr, DataDeviceTypeStr).toLatin1());
         header.append(logisdom::saveformat(DataSize, "0").toLatin1());
@@ -977,7 +970,7 @@ QString Connection::extractBuffer(const QString &data)
 	QString extract = "";
 	int chdeb, chfin, L;
 #if QT_VERSION < 0x060000
-    buffer += data;
+    buffer += data.toUtf8();
 #else
     buffer += data.toLatin1();
 #endif

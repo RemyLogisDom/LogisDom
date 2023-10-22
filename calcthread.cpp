@@ -26,17 +26,14 @@
 #include "globalvar.h"
 #include "onewire.h"
 #include "configwindow.h"
-#include "weathercom.h"
 #include "energiesolaire.h"
 #include "meteo.h"
 #include "addDaily.h"
 #include "addProgram.h"
 #include "formula.h"
 #include "logisdom.h"
-#include "formulasimple.h"
 #include "calcthread.h"
 #include "calc.h"
-#include "mailsender.h"
 
 
 calcthread::calcthread(formula *Parent)
@@ -1094,18 +1091,18 @@ double calcthread::toNumeric(const QString &S, bool *ok)
     double v = logisdom::NA;
     onewiredevice *device = checkDevice(S);
     *ok = false;
-    if (S.left(1) == "V")
+    if (S.mid(0, 1) == "V")
     {
-        int index = S.right(S.length() - 1).toInt(ok);
+        int index = S.rightRef(S.length() - 1).toInt(ok);
         if (*ok) if (index < V.count())
         {
             v = V[index];
             *ok = true;
         }
     }
-    else if (S.left(1) == "X")
+    else if (S.mid(0, 1) == "X")
     {
-        int index = S.right(S.length() - 1).toInt(ok);
+        int index = S.rightRef(S.length() - 1).toInt(ok);
         if (*ok) if (index < NPOLES)
         {
             scroolDSP();
@@ -1113,9 +1110,9 @@ double calcthread::toNumeric(const QString &S, bool *ok)
             *ok = true;
         }
     }
-    else if (S.left(1) == "Y")
+    else if (S.mid(0, 1) == "Y")
     {
-        int index = S.right(S.length() - 1).toInt(ok);
+        int index = S.rightRef(S.length() - 1).toInt(ok);
         if (*ok) if (index < NPOLES)
         {
             scroolDSP();
@@ -1262,7 +1259,7 @@ bool calcthread::resoudreParenthese()
     QString OP;
     if (Pferm != -1)
     {
-        int Pouv = Calc.left(Pferm).lastIndexOf("(");
+        int Pouv = Calc.leftRef(Pferm).lastIndexOf("(");
         if (Pouv == -1) syntaxError(tr("Missing opening bracket"));
         ManageError
         OP = "";

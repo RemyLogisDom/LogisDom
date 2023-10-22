@@ -125,7 +125,8 @@ graph::graph(logisdom *Parent, QString &name)
     setupLayout.addWidget(&AddHistoButton, layoutIndex++, 0, 1, 1);
     setupLayout.addWidget(&curveList, layoutIndex++, 0, 2, 5);
 	Name = name;
-	Origin = QDateTime(QDate(yearscalebegin, 1, 1), QTime(0, 0, 0, 0));
+    Origin = QDateTime::fromSecsSinceEpoch(0);
+    //correctif  2.308 Origin = QDateTime(QDate(yearscalebegin, 1, 1), QTime(0, 0, 0, 0));
 	setWindowTitle(Name);
 	toggleManual(Qt::Unchecked);
 	connect(&plot, SIGNAL(loadingFinished()), this, SLOT(loadingFinished()));
@@ -558,7 +559,7 @@ void graph::updategraph(bool)
 		setScale();
         plot.setAxisScale(QwtPlot::xBottom, scalestart, scaleend, scaleDiv);
 		updateYaxisScale();
-		plot.update(Origin, begin, end, CompressBox.isChecked());
+        plot.update(Origin, begin, end, CompressBox.isChecked());
 		connectAll();
 		waitSign();
 		parent->mutexGraph.unlock();

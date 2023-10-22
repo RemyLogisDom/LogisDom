@@ -40,7 +40,7 @@ class calc : public QObject
 public:
     calc();
     double calculsimple(const QString &str);
-    QString textBrowserResult;
+    QString textBrowserResult = "";
 private:
     QString Calc, webStrResult;
     bool scroolDone;
@@ -52,7 +52,7 @@ private:
     bool dataValid;
     bool deviceLoading;
     QList <double> V;
-    QDateTime *TCalc;
+    QDateTime *TCalc = nullptr;
     double target;
     void dataError(QString msg);
     bool AutoEnabled;   // used to autocalculate on change when device value used in the formula are changing

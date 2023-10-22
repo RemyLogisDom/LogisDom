@@ -27,11 +27,9 @@
 #include <QtGui>
 #include <QGroupBox>
 
-#include "ui_onewiredevice.h"
 #include "axb.h"
 #include "interval.h"
 #include "dataloader.h"
-#include "calcthread.h"
 #include "formula.h"
 #include "htmlbinder.h"
 #include "net1wire.h"
@@ -131,8 +129,14 @@ struct CommonRegStruct
 
     QElapsedTimer lastMessage;
     QTimer checkLastMessage;
+    /// saveDelay timer is used when device is controlled by LogisDom VMC.
+    /// to avoid saving problem when read result and VMC command to arrive close from eachother
+    /// Generally, the read result arrives first, and the command just after, the problem is that the result will be saved, and the command will not be save because
+    /// the saving interval has been reset by the result.
+    /// We wait 2 seconds before emiting the save command if the device is controled by VMC
+    QTimer saveDelay;
+    QString filenameSaveThread, strOutSave;
     QString secondaryValue;
-
     QPushButton SendButton;
 	int layoutIndex;
 	int VD_Rank;
@@ -165,8 +169,6 @@ struct CommonRegStruct
     void getCfgStr(QString &str, bool All = true);
 	void setCfgStr(QString &strsearch);
 	QString getscratchpad();
-	int getHouseCode();
-	int getModuleCode();
 	void emitDeviceValueChanged();
     void setPluginMainValue(double value);
     virtual void setMainValue(double value, bool enregistremode);
@@ -194,8 +196,6 @@ struct CommonRegStruct
 	virtual void GetConfigStr(QString &str);
 	virtual void setconfig(const QString &configdata);
 	virtual void send_Value(double val);
-	virtual void setHouseCode(int House, int Module);
-	virtual void setHouseCode(QString House, QString Module);
 	virtual bool setscratchpad(const QString &scratchpad, bool enregistremode = false);
     virtual void SetOrder(const QString &order);
 	virtual void stopAll();
@@ -245,11 +245,10 @@ private:
 	int resolution, channel[4];
 	int valid;
 	double MainValue, lastMainValue, TalarmH, TalarmB, lastsavevalue;
-	net1wire *master;
-    logisdom *parent;
+    net1wire *master = nullptr;
+    logisdom *parent = nullptr;
 	net1wire *uploader;
 	QString scratchpad, family ;
-	int X10SleepCount;
 	bool firstsave;
 	virtual void writescratchpad();
 	virtual void changresoultion();
@@ -258,7 +257,6 @@ private:
     virtual void saveDeviceConfig();
     virtual double calcultemperature(const QString &THex);
 	QGridLayout *framelayout;
-	int HouseCode, ModuleCode;
 	int getresolution(QString scratch);
 	static double calcultemperaturealarmeH(const QString  &scratch);
 	static double calcultemperaturealarmeB(const QString  &scratch);
@@ -284,6 +282,7 @@ private slots:
     void UserText_Changed(const QString &);
     void setDataLoading();
     void setTraffic(int);
+    void saveEmit();
 public slots:
 	virtual void contextMenuEvent(QContextMenuEvent *event);
 	virtual void setdualchannelAOn();

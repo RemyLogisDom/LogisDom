@@ -35,7 +35,6 @@
 #include "onewire.h"
 #include "formula.h"
 #include "configwindow.h"
-#include "remote.h"
 #include "curve.h"
 
 
@@ -50,9 +49,7 @@ GraphCurve::GraphCurve(const QString &title)
 	finishOffset = 0;
 	lastBeginOffset = 0;
 	lastFinishOffset = 0;
-	Origin.setDate(QDate(yearscalebegin, 1, 1));
-	Origin.setTime(QTime(0, 0));
-    //Origin = QDateTime(QDate(yearscalebegin, 1, 1), QTime(0, 0, 0, 0));
+    Origin = QDateTime::fromSecsSinceEpoch(0);
     setup.setLayout(&setupLayout);
 	setupLayout.setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	CurveColorButton.setText(tr("Curve color"));
@@ -202,6 +199,7 @@ void  GraphCurve::update(const QDateTime &begin, const QDateTime &finish, bool c
 			x /= SecsInDays;
             Yraw.append(data.data_Y.at(n));
             Xraw.append(x);
+            //qDebug() << QString("x=%1, y=%2, index=%3").arg(x).arg(data.data_Y.at(n)).arg(n);
 		}
         qreal s = secondScale;
 		if (compress)

@@ -192,7 +192,7 @@ energiesolaire::energiesolaire(QWidget*)
 //	bg2->attach(&plotAn);
 	plotAn.setAxisScale(QwtPlot::xBottom, 0, 365);
 	plotAn.setAxisScale(QwtPlot::yLeft, 0, 5500);
-	plotAn.setAxisScaleDraw(QwtPlot::xBottom, new DateScaleDrawSoleil(QDate(yearscalebegin, 1, 1)));
+    plotAn.setAxisScaleDraw(QwtPlot::xBottom, new DateScaleDrawSoleil(QDate(1970, 1, 1)));
 	plotAn.setWindowTitle("Daily Sun Power received by 1 square meter during 1 year");
 	plotAn.setWindowIcon(QIcon(QString::fromUtf8(":/images/images/kfm_home.png")));
 	plotAn.addcurve(tr("Pannel"), "", Qt::blue);
@@ -634,7 +634,7 @@ void energiesolaire::GraphAn()
 	QDateTime Now;
 	Now.setDate(ui.dateEdit->date());
 	Now.setTime(QTime(12, 00));
-    qint64 scalestart = - Now.date().daysTo(QDate(yearscalebegin, 1, 1));
+    qint64 scalestart = - Now.date().daysTo(QDate(1970, 1, 1));
 	plotAn.setAxisScale(QwtPlot::xBottom, scalestart, scalestart + 365);
 	plotAn.show();
 	plotAn.replot();

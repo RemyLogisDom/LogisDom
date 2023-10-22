@@ -118,7 +118,6 @@
 #define default_port_EZL50 1470
 #define default_port_remote 1220
 #define defaultTempUnit 1	// 1 = Celsius 0 = Fahrenheit
-#define yearscalebegin 1970
 #define default_wait 500
 #define X_default 10
 #define Y_default 80

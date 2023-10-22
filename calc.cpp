@@ -48,7 +48,6 @@ calc::calc()
     target = logisdom::NA;
     syntax = false;
     dataValid = false;
-    TCalc = nullptr;
 }
 
 
@@ -74,7 +73,7 @@ double calc::toNumeric(const QString &S, bool *ok)
     double v = logisdom::NA;
     onewiredevice *device = checkDevice(S);
     *ok = false;
-    if (S.left(1) == "V")
+    if (S.at(0) == "V")
     {
         int index = S.right(S.length() - 1).toInt(ok);
         if (*ok) if (index < V.count())
@@ -391,17 +390,17 @@ bool calc::multiplier(QString &C)
     int posx = C.indexOf("*");
     if (posx != -1)
     {
-        textBrowserResult += "\n" + ("Multiplier " + C);
+        textBrowserResult.append("\n" + ("Multiplier " + C));
         int Prev = getPreviousOp(C, posx);
         if (Prev == -1) Prev = 0; else Prev++;
         A = C.mid(Prev, posx - Prev);
-        textBrowserResult += "\n" + ("A = " + A);
+        textBrowserResult.append("\n" + ("A = " + A));
         if (A.isEmpty()) { syntaxError(tr("Missing operand A")); ManageError }
         int Next = getNextOp(C, posx);
         if (Next == posx + 1) Next = getNextOp(C, posx + 1);
         if (Next == -1) Next = C.length() - 1; else Next--;
         B = C.mid(posx + 1, Next - posx);
-        textBrowserResult += "\n" + ("B = " + B);
+        textBrowserResult.append("\n" + ("B = " + B));
         if (B.isEmpty()) { syntaxError(tr("Missing operand B")); ManageError }
         if (isNumeric(A)) a = A.toDouble(&ok); else a = toNumeric(A, &ok);
         if (!ok) { ManageError("Operand A error : " + A); ManageError }
@@ -413,7 +412,7 @@ bool calc::multiplier(QString &C)
         QString P = C.left(Prev);
         QString S = C.right(C.length() - Next - 1);
         C = P + QString("V%1").arg(index) + S;
-        textBrowserResult += "\n" + ("Multiplication done : " + C + QString(" = %1").arg(v, 0, 'e'));
+        textBrowserResult.append("\n" + ("Multiplication done : " + C + QString(" = %1").arg(v, 0, 'e')));
         return true;
     }
     return false;

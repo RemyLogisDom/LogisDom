@@ -31,7 +31,6 @@
 #include "graphconfig.h"
 #include "alarmwarn.h"
 #include "errlog.h"
-//#include "x10.h"
 #include "deveo.h"
 #include "teleinfo.h"
 #include "mbus.h"
@@ -44,7 +43,6 @@
 #include "devfinder.h"
 #include "fts800.h"
 #include "ha7net.h"
-//#include "plcbus.h"
 #include "net1wire.h"
 #include "enocean.h"
 #include "rps2.h"
@@ -52,30 +50,20 @@
 #include "devrps2.h"
 #include "devresol.h"
 #include "server.h"
-//#include "formula.h"
 #include "connection.h"
 #include "configmanager.h"
 #include "logisdom.h"
 #include "remote.h"
 #include "onewire.h"
-//#include "chauffageunit.h"
 #include "programevent.h"
 #include "tableauconfig.h"
-//#include "addDaily.h"
 #include "daily.h"
-//#include "vmc.h"
 #include "treehtmlwidget.h"
 #include "htmlbinder.h"
 #include "inputdialog.h"
 #include "messagebox.h"
 #include "configwindow.h"
-//#include "mailsender.h"
 #include "globalvar.h"
-//#include "mail/mailserver.h"
-//#include "mail/mimemessage.h"
-//#include "mail/emailaddress.h"
-//#include "mail/mimetext.h"
-//#include "mail/serverreply.h"
 
 
 #ifdef WIN32
@@ -150,7 +138,9 @@ configwindow::configwindow(logisdom *Parent)
 	connect(&checkBoxTree, SIGNAL(stateChanged(int)), this, SLOT(treeViewSwitch(int)));
     connect(&Listfilter, SIGNAL(textChanged(QString)), this, SLOT(filterChanged(QString)));
     connect(ui.pushButtonPNGFolder, SIGNAL(clicked()), this, SLOT(choosePngFolder()));
-	connect(ui.pushButtonAdd, SIGNAL(clicked()), this, SLOT(addHtmlMenu()));
+    connect(ui.pushButtonClearLog, SIGNAL(clicked()), this, SLOT(clearServerLog()));
+    connect(ui.pushButtonClearIPList, SIGNAL(clicked()), this, SLOT(clearIPList()));
+    connect(ui.pushButtonAdd, SIGNAL(clicked()), this, SLOT(addHtmlMenu()));
 	connect(ui.pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeHtmlMenu()));
     connect(ui.pushButtonAddInterface, SIGNAL(clicked()), this, SLOT(ajouter()));
     connect(ui.pushButtonAddVD, SIGNAL(clicked()), this, SLOT(addVDev()));
@@ -221,7 +211,10 @@ configwindow::configwindow(logisdom *Parent)
 configwindow::~configwindow()
 {
 	delete server;
-	delete configmanager;
+    delete configmanager;
+    delete htmlBindNetworkMenu;
+    delete htmlBindDeviceMenu;
+    OneWireTree.clear();
 }
 
 
@@ -1049,7 +1042,15 @@ retry :
 
 
 
-
+void configwindow::updateBanIPList()
+{
+    ui.listViewbanIP->clear();
+    for (int n=0; n<server->banedIP.count(); n++)
+    {
+        QListWidgetItem *widgetList = new QListWidgetItem(ui.listViewbanIP);
+        widgetList->setText(server->banedIP.at(n));
+    }
+}
 
 
 void configwindow::updateUsersList()
@@ -1094,7 +1095,8 @@ void configwindow::startstopserver(int state)
 {
 	if (state == Qt::Unchecked)
 	{
-		server->close();
+        server->close();
+        server->clear();
 		ui.lineEditServer->setText(tr("tcp remote server is closed"));
 	}
 	if (state == Qt::Checked)
@@ -1110,7 +1112,68 @@ void configwindow::startstopserver(int state)
 
 void configwindow::newRequest(QString data)
 {
-    ui.textEdit->append(data);
+    if (data.startsWith("ban:")) {
+            data.remove("ban:");
+            if (!server->banedIP.contains(data)) {
+            bool found = false;
+            for (int n=0; n<suspectIP.count(); n++)
+            {
+                if (suspectIP.at(n)->ip == data)
+                {
+                    found = true;
+                    suspectIP.at(n)->count ++;
+                    logServer(data + QString(" identified suspect list rank %1").arg(suspectIP.at(n)->count));
+                    if (suspectIP.at(n)->count > 9)
+                    {
+                        server->banedIP.append(data);
+                        delete suspectIP.takeAt(n);
+                        logServer(data + " added to banned list");
+                        updateBanIPList();
+                        return;
+                    }
+                }
+            }
+            if (!found)
+            {
+                ipInt *hacker = new ipInt;
+                hacker->count = 0;
+                hacker->ip = data;
+                suspectIP.append(hacker);
+                logServer(data + " identified added to suspect list");
+            }
+        }
+        else {
+            logServer(data + " is banned");
+        }
+    }
+    else logServer(data);
+}
+
+
+
+void configwindow::clearServerLog()
+{
+    ui.serverLogView->clear();
+}
+
+
+
+void configwindow::clearIPList()
+{
+    server->banedIP.clear();
+    ui.listViewbanIP->clear();
+}
+
+
+
+
+void configwindow::logServer(QString log)
+{
+    QDateTime now = QDateTime::currentDateTime();
+    ui.serverLogView->append(now.toString("HH:mm:ss  :  ") + log);
+    QString currenttext = ui.serverLogView->toPlainText();
+    if (currenttext.length() > sizeMax) ui.serverLogView->setText(currenttext.mid(sizeMax - 1000));
+    ui.serverLogView->moveCursor(QTextCursor::End);
 }
 
 
@@ -1122,10 +1185,7 @@ void configwindow::NewClient(Connection *client)
 	QDateTime now = QDateTime::currentDateTime();
 	parent->logthis(clientfilename, Msg, "");
     QHostAddress adr(client->tcp->peerAddress().toIPv4Address());
-    //ui.textEdit->append(now.toString("HH:mm:ss  :  ") + "open socket : " + adr.toString());
-    QString currenttext = ui.textEdit->toPlainText();
-    if (currenttext.length() > sizeMax) ui.textEdit->setText(currenttext.mid(sizeMax - 1000));
-    ui.textEdit->moveCursor(QTextCursor::End);
+    logServer ("open socket : " + adr.toString());
 }
 
 
@@ -1136,15 +1196,12 @@ void configwindow::ClientisGone(Connection *client)
 	ui.lineEditServer->setText(tr("Server ready port %1, %2 client\n").arg(server->serverPort()).arg(server->clients()));
     QDateTime now = QDateTime::currentDateTime();
     QHostAddress adr(client->tcp->peerAddress().toIPv4Address());
-    ui.textEdit->append(now.toString("HH:mm:ss  :  ") + "close socket : " + adr.toString());
+    logServer("close socket : " + adr.toString());
     if (!client->getName().isEmpty())
 	{
 		QString Msg = client->getName() + tr(" disconnected");
 		parent->logthis(clientfilename, Msg, "");
-        ui.textEdit->append(now.toString("dddd dd/MM/yyyy HH:mm  :  ") + Msg);
-		QString currenttext = ui.textEdit->toPlainText();
-        if (currenttext.length() > sizeMax) ui.textEdit->setText(currenttext.mid(sizeMax - 1000));
-		ui.textEdit->moveCursor(QTextCursor::End);
+        logServer(Msg);
 	}
 	client->deleteLater();
 }
@@ -1187,23 +1244,8 @@ void configwindow::LectureAll()
 void configwindow::LectureRecAll()
 {
     foreach (onewiredevice *dev, devicePtArray) { // read counter first
-        QString devRomID = dev->getromid();
-        if (!devRomID.isEmpty()) {
-            QString RomID = devRomID.left(16);
-            QString family = RomID.right(2);
-            if (family == family2423) dev->lecturerec(); } }
-    foreach (onewiredevice *dev, devicePtArray) {
-        QString devRomID = dev->getromid();
-        if (!devRomID.isEmpty()) {
-            QString RomID = devRomID.left(16);
-            QString family = RomID.right(2);
-            if (family != family2423) dev->lecturerec(); } }
-/*    for (int n=0; n<devicePtArray.count(); n++)
-		if (!devicePtArray.at(n)->isVirtualFamily())
-		{
-			devicePtArray.at(n)->lecturerec();
-			QCoreApplication::processEvents(QEventLoop::AllEvents);
-        }*/
+            if (dev->getfamily() == family2423) dev->lecturerec(); }
+    foreach (onewiredevice *dev, devicePtArray) { if (dev->getfamily() != family2423) dev->lecturerec(); }
 }
 
 
@@ -1648,14 +1690,14 @@ void configwindow::updateDeviceList()
 {
 	QMutexLocker locker(&mutex);
 	OneWireList.clear();
-    for (int i=0; i<OneWireTree.topLevelItemCount(); i++)
+    /*for (int i=0; i<OneWireTree.topLevelItemCount(); i++)
     {
         while (OneWireTree.topLevelItem(i)->childCount())
         {
             OneWireTree.topLevelItem(i)->removeChild(OneWireTree.topLevelItem(i)->child(0));
         }
-    }
-    //OneWireTree.clear();
+    }*/
+    OneWireTree.clear();
     for (int n=0; n<devicePtArray.count(); n++)
 	{
         QString name = devicePtArray.at(n)->getname();
@@ -1675,8 +1717,8 @@ void configwindow::updateDeviceList()
             if (!masterStr.isEmpty())
             {
                 QTreeWidgetItem *masterItem = nullptr;
-                for (int i=0; i<OneWireTree.topLevelItemCount(); i++)		// check if master exist
-                    if (OneWireTree.topLevelItem(i)->text(0) == masterStr) masterItem = OneWireTree.topLevelItem(i);
+                for (int i=0; i<OneWireTree.topLevelItemCount(); i++) {		// check if master exist
+                    if (OneWireTree.topLevelItem(i)->text(0) == masterStr) masterItem = OneWireTree.topLevelItem(i); }
                 if (!masterItem)
                 {
                     masterItem = new QTreeWidgetItem(&OneWireTree, 0);
@@ -2731,7 +2773,6 @@ void configwindow::DataPathClicked()
 		parent->repertoiredat = path;
 	}
 }
-
 
 
 

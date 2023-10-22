@@ -388,25 +388,6 @@ Data folder if empty</string>
            <string>Server</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="lineEditServer"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="spinBoxPortServer">
-             <property name="suffix">
-              <string/>
-             </property>
-             <property name="prefix">
-              <string>Port : </string>
-             </property>
-             <property name="maximum">
-              <number>99999</number>
-             </property>
-             <property name="value">
-              <number>499</number>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="2">
             <widget class="QCheckBox" name="checkBoxServer">
              <property name="text">
@@ -427,13 +408,59 @@ Data folder if empty</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" colspan="2">
-            <widget class="QTextEdit" name="textEdit">
+           <item row="0" column="3">
+            <widget class="QPushButton" name="pushButtonClearLog">
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="spinBoxPortServer">
+             <property name="suffix">
+              <string/>
+             </property>
+             <property name="prefix">
+              <string>Port : </string>
+             </property>
+             <property name="maximum">
+              <number>99999</number>
+             </property>
+             <property name="value">
+              <number>499</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" rowspan="3" colspan="3">
+            <widget class="QTextEdit" name="serverLogView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>1</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLineEdit" name="lineEditServer"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QListWidget" name="listViewbanIP">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="contextMenuPolicy">
+              <enum>Qt::CustomContextMenu</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="pushButtonClearIPList">
+             <property name="text">
+              <string>Clear IP List</string>
              </property>
             </widget>
            </item>

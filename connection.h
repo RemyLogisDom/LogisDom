@@ -41,6 +41,7 @@ public:
     Connection(QTcpSocket *socket, Server *parent);
 	~Connection();
     QTcpSocket *tcp;
+    QString ip;
 	void sendScratchPads();
 	void sendMainValue();
 	QString getName();

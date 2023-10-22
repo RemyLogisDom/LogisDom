@@ -25,8 +25,6 @@
 
 #include "ledonewire.h"
 #include "globalvar.h"
-#include "server.h"
-#include "inputdialog.h"
 
 
 
@@ -657,8 +655,8 @@ void ledonewire::setconfig(const QString &strsearch)
     int led = logisdom::getvalue("LED_Mode", strsearch).toInt(&ok);
     if (ok)
     {
-        if (led) ui.radioButtonLED->setChecked(Qt::Checked);
-        else ui.radioButtonVolet->setChecked(Qt::Checked);
+        if (led) ui.radioButtonLED->setChecked(true);
+        else ui.radioButtonVolet->setChecked(true);
     }
 }
 

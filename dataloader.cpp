@@ -225,11 +225,15 @@ bool dataloader::getValues(qint64 BEGIN, qint64 END, s_Data &data, int minDif)
 		begin = BEGIN;
 		end = END;
 	}
-    //if (logGetValue) logtxt += "Get Value Begin  " + Origin.addSecs(begin).toString("dd MMM yyyy hh:mm:ss\n");
+    //qDebug() << "Get Value Begin  " + QDateTime::fromSecsSinceEpoch(begin).toString("dd MMM yyyy hh:mm:ss");
     qint64 indexBegin = getIndex(begin, searchAfter, minDif);
-    //if (logGetValue) logtxt += "Get Value End  " + Origin.addSecs(end).toString("dd MMM yyyy hh:mm:ss\n");
+    //qDebug() << QString("getIndexBegin : %1").arg(indexBegin);
+
+    //qDebug() << "Get Value End  " + QDateTime::fromSecsSinceEpoch(end).toString("dd MMM yyyy hh:mm:ss");
     qint64 indexEnd = getIndex(end, searchBefore, minDif);
-	if ((indexEnd < 0) or (indexBegin < 0))
+    //qDebug() << QString("getIndexEnd : %1").arg(indexEnd);
+
+    if ((indexEnd < 0) or (indexBegin < 0))
 	{
 		if (logGetValue)
 		{
@@ -381,6 +385,7 @@ qint64 dataloader::getIndex(qint64 t, int searchMode, int minDif)
     qint64 index = 0;
     qint64 left = 0;
     qint64 right = Data_Time.count();
+    //qDebug() << QString("Data_Time count = %1 value = %2").arg(Data_Time.count()).arg(Data_Y.last());
 	if (Data_Time.count() == 0)
 	{
 		if (logGetValue) logtxt += "Device has no data\n";
@@ -409,7 +414,7 @@ qint64 dataloader::getIndex(qint64 t, int searchMode, int minDif)
 		else
 		{
 		    if (logGetValue) logtxt += QString("Return last data index = %1\n").arg(Data_Time.count() - 1);
-		    return (Data_Time.count() - 1);
+            return (Data_Time.count() - 1);
 		}
 	}
 	while ((right - left) > 1)

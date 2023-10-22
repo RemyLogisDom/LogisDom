@@ -49,6 +49,17 @@ Server::Server(logisdom *Parent)
 
 
 
+void Server::clear()
+{
+    for (int n=0; n<SocketList.count(); n++)
+    {
+        SocketList.at(n)->close();
+        delete SocketList.at(n);
+    }
+    SocketList.clear();
+}
+
+
 
 void Server::sendAll()
 {
@@ -69,16 +80,19 @@ void Server::newSocket()
 //#ifdef Q_OS_WIN32
     //setsockopt(sd, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
 //#endif
-
+    QHostAddress adr(socket->peerAddress().toIPv4Address());
+    QString ip = adr.toString();
+    if (banedIP.contains(ip))
+    {
+        socket->close();
+        QDateTime now = QDateTime::currentDateTime();
+        QString str;
+        str = ip + " tried to connect but it is banished";
+        emit newRequest(str);
+        socket->deleteLater();
+        return;
+    }
     Connection *connection = new Connection(socket, this);
-/*
-void Server::incomingConnection(int socketDescriptor)
-{
-    connection->setSocketDescriptor(socketDescriptor);
-//        connect(connection, SIGNAL(clientbegin(Connection*)), this, SLOT(clientBegin(Connection*)), Qt::BlockingQueuedConnection);
-}
-
- */
     connect(connection, SIGNAL(clientend(Connection*)), this, SLOT(clientEnd(Connection*)));
     connect(connection, SIGNAL(newRequest(QString)), this, SLOT(emitNewRequest(QString)));
     SocketList.append(connection);

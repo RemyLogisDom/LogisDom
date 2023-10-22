@@ -68,13 +68,15 @@ struct UserIDs
 	void setLastPageWeb(const QString &ID, const QString &pageweb);
 	QString getLastPageWeb(const QString &ID);
 	void transfertToOthers(QString order, Connection *client = nullptr);
+    QStringList banedIP;
 private:
 	int clientconnected;
 	QList<Connection*> SocketList;
 	QString usersonnected;
-        QMutex GetID;
+    QMutex GetID;
 public slots:
 	void sendAll();
+    void clear();
 private slots:
 	void clientEnd(Connection*);
     void emitNewRequest(QString);

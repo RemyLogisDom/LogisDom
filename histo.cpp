@@ -53,7 +53,7 @@ GraphHisto::GraphHisto(tableau *Chart)
     finishOffset = 0;
     lastBeginOffset = 0;
     lastFinishOffset = 0;
-    Origin.setDate(QDate(yearscalebegin, 1, 1));
+    Origin = QDateTime::fromSecsSinceEpoch(0);
     Origin.setTime(QTime(0, 0));
     setup.setLayout(&setupLayout);
     setupLayout.setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -80,7 +80,7 @@ GraphHisto::GraphHisto(tableau *Chart)
     StyleButton.addItem(tr("Lines "));
     StyleButton.addItem(tr("UserStyle "));
     setupLayout.addWidget(&StyleButton);
-    Origin = QDateTime(QDate(yearscalebegin, 1, 1), QTime(0, 0, 0, 0));
+    Origin = QDateTime::fromSecsSinceEpoch(0);
     connect(&StyleButton, SIGNAL(currentIndexChanged(int)), this, SLOT(setStyle(int)));
 }
 

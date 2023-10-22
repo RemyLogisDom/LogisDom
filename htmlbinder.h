@@ -45,8 +45,9 @@ public:
 // palette setup
 	QGridLayout layout;
 	QListWidget htmlMenuList;
+    QList <QTreeWidgetItem*> treeItems;
 	logisdom *parent;
-	QTreeWidgetItem *parentItem, *treeItem;
+    QTreeWidgetItem *parentItem = nullptr, *treeItem = nullptr;
 	QString ID;
 	void widgetSetup();
 	htmlBinder *binderParent;
@@ -74,9 +75,8 @@ public:
 	void setCfgStr(QString &str);
 private slots:
 	void clickHtmlList(QListWidgetItem *item);
-private:
 signals:
-	void remoteCommand(QString);
+    void remoteCommand(QString);
 	void sendConfigStr(QString);
     void valueChanged();
 };

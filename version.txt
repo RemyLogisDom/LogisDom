@@ -1,14 +1,20 @@
-﻿    Version = "2.308 (Qt " QT_VERSION_STR ")";
-    VersionDate = "Aout 2023";
+﻿    Version = "2.310 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Octobre 2023";
     VersionHistory = " \
 a faire\
+Value at startup for enocean switch\
 quand on change le language les déclenchement ne fonctionnent plus à cause du nom Déclenchement qui est traduit\
 Nombre de ligne Max apres recompilation tableau\
 format heure data file UTC\
 calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\
 bad link si pas de capteur selectionné si on met seulement mode de déclenchement en lien\
+    Version 2.310\
+        - Ajout IP bannishement for server\
+        - Correctif fuite memoire connection.cpp ligne 65\
     Version 2.308\
         - modification temporisateur pour declenchement pour fonction lib on wire on/off/dim/bright\
+        - ajouter save delay dans onewiredevice\
+        - correctif end de graphique graph l129\
     Version 2.306\
         - supression Qt::WA_DeleteOnClose dans iconf et icont\
         - ajout nom fichier dans descriptif actualFileName.setText(path) ligne 489\

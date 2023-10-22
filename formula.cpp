@@ -94,6 +94,9 @@ formula::~formula()
 {
 	delete reprossthread;
 	delete calcth;
+    delete thread;
+    delete threadr;
+    delete reprossthread;
 }
 
 

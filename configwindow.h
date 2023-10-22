@@ -31,7 +31,6 @@
 #include <QtGui>
 
 #include "ui_configgui.h"
-#include "stdint.h"
 #include "backup.h"
 #include "pngthread.h"
 #include "sendmailthread.h"
@@ -55,7 +54,10 @@ class eocean;
 class LogisDomInterface;
 
 
-
+struct ipInt {
+    QString ip;
+    uint count;
+};
 
 class configwindow : public QDialog
 {
@@ -105,9 +107,9 @@ struct htmlSetup
     QLineEdit Listfilter;
 	QToolButton DevicesTool;
 	QCheckBox checkBoxTree;
-	htmlBinder *htmlBindNetworkMenu;
-	htmlBinder *htmlBindDeviceMenu;
-	htmlBinder *htmlBindWebMenu;
+    htmlBinder *htmlBindNetworkMenu = nullptr;
+    htmlBinder *htmlBindDeviceMenu = nullptr;
+    htmlBinder *htmlBindWebMenu = nullptr;
     typedef std::vector<uint8_t> byteVec_t;
     onewiredevice *NewPluginDevice(const QString &newRomID, LogisDomInterface *);
     onewiredevice *NewDevice(const QString &RomID, net1wire *master);
@@ -115,6 +117,7 @@ struct htmlSetup
 	void updateDeviceList();
     QTimer backupTimer;
     QStringList fileToBackup;
+    QList<ipInt*> suspectIP;
     bool deviceexist(const QString &RomID);
 	bool deviceexist(onewiredevice *device);
 	onewiredevice *DeviceExist(const QString &RomID);
@@ -189,7 +192,8 @@ private:
 	configManager *configmanagerTr;
 	logisdom *parent;
 	QString toStr(int index);
-	void updateUsersList();
+    void updateBanIPList();
+    void updateUsersList();
     void readconfigfilefordevice(const QString &configdata, onewiredevice *device);
 	QList <net1wire*> net1wirearray;
     QList <onewiredevice*> devicePtArray;
@@ -215,11 +219,14 @@ private slots:
     void removeVD();
     void loadVD();
     void choosePngFolder();
-	void rightclicklList(const QPoint & pos);
+    void clearServerLog();
+    void clearIPList();
+    void rightclicklList(const QPoint & pos);
 	void ShowDevice();
 	void DisplayDevice(int index);
 	void startstopserver(int state);
-	void NewClient(Connection*);
+    void NewClient(Connection*);
+    void logServer(QString);
     void newRequest(QString);
     void ClientisGone(Connection*);
     void setPalette(int index);

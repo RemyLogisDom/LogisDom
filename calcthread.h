@@ -52,8 +52,8 @@ enum family
     famOperator, famDevices, famMath, famRomID, famTime, famWeather, webFamily, lastFamily
 };
     calcthread(formula *Parent);
-    formula *parent;
-    QString *logStr;
+    formula *parent = nullptr;
+    QString *logStr = nullptr;
     bool stopRequest;
     bool calculating;
     QString lastCalc, lastCalcStr, lastCalcClean;
@@ -179,7 +179,6 @@ signals:
 #if QT_VERSION > 0x050603
 
 #define FunctionGetData		\
-QDateTime origin(QDate(1970, 1, 1), QTime(0, 0, 0)); \
 qint64 minutes = 0; \
 qint64 end = 0; \
 qint64 begin = 0; \
@@ -227,7 +226,6 @@ if (!ok) \
 
 
 #define FunctionGetDatawLength		\
-QDateTime origin(QDate(1970, 1, 1), QTime(0, 0, 0)); \
 qint64 minutes = 0; \
 qint64 end = 0; \
 qint64 begin = 0; \
