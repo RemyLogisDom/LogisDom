@@ -383,6 +383,7 @@ void onewiredevice::setname(const QString &NameStr)
 	setWindowTitle(name);
 	RenameButton.setText(name);
 	htmlBind->setName(name);
+    if (plugin_interface) plugin_interface->setDeviceConfig("setDeviceName",  romid + "//" + name);
 	emit(DeviceConfigChanged(this));
 }
 
@@ -409,8 +410,9 @@ retry:
 		}
 		name = Name;
 		setWindowTitle(Name);
-		RenameButton.setText(Name);
-		emit(DeviceConfigChanged(this));
+        RenameButton.setText(Name);
+        if (plugin_interface) plugin_interface->setDeviceConfig("setDeviceName",  romid + "//" + name);
+        emit(DeviceConfigChanged(this));
 	}	
 }
 
@@ -1406,11 +1408,12 @@ void onewiredevice::removeHtmlMenulist(QString name)
 
 void onewiredevice::setconfig(const QString &strsearch)
 {
-    setname(romid);
+    // modif 20-11-2023 setname(romid);
     AXplusB.setconfig(strsearch);
     QString Name = logisdom::getvalue("Name", strsearch);
+    if (name != Name) {
     if (!Name.isEmpty()) setname(assignname(Name));
-    else setname(assignname(romid));
+    else setname(assignname(romid)); }
     AXplusB.setconfig(strsearch);
     if ((family == family1820) || (family == family18B20) || (family == family1822) || (family == family1825)) {
         bool ok;

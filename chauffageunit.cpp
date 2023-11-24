@@ -31,7 +31,6 @@
 #include "logisdom.h"
 #include "onewire.h"
 #include "programevent.h"
-#include "daily.h"
 #include "formula.h"
 #include "addDaily.h"
 #include "devchooser.h"
@@ -190,11 +189,16 @@ ChauffageUnit::ChauffageUnit(logisdom *Parent, QString name)
 	setupLayout.addWidget(&Vmax, i++, 1, 1, 1);
 	connect(&Vmax, SIGNAL(valueChanged(int)), this, SLOT(maxChanged(int)));
 	passiveMode.setText(tr("Passive Mode"));
+    passiveMode.setToolTip(tr("When enabled, the valve opening percentage is not taken into account \nwhen calcultaing the total of all device percentage"));
 	setupLayout.addWidget(&passiveMode, i, 0, 1, 1);
 	proportionalMinMax.setText(tr("Proportional"));
 	proportionalMinMax.setEnabled(false);
 	setupLayout.addWidget(&proportionalMinMax, i++, 1, 1, 1);
-	setupLayout.addWidget(Formula, i++, 0, 1, 2);
+    autonomousValve.setText("Autonomus Valve");
+    autonomousValve.setToolTip("When enabled, the valve calculate itself the percentage\nThe circulator will be activated when the measured temperature is below the target\nThe valve percentage will only be read\nThe calculated target must be the temperature setpoint");
+    setupLayout.addWidget(&autonomousValve, i++, 0, 1, 1);
+    connect(&autonomousValve, SIGNAL(stateChanged(int)), this, SLOT(AutonomusChanged(int)));
+    setupLayout.addWidget(Formula, i++, 0, 1, 2);
 	connect(Name, SIGNAL(clicked()), this, SLOT(emitSetupClick()));
 	connect(this, SIGNAL(setupClick(QWidget*)), parent, SLOT(setPalette(QWidget*)));
 	ComboIndex = line - 1;
@@ -578,11 +582,42 @@ void ChauffageUnit::minChanged(int value)
 
 
 
-void ChauffageUnit::maxChanged(int value)
+void ChauffageUnit::AutonomusChanged(int state)
 {
-	Vmin.setMaximum(value);
+    if (state)
+    {
+        Vmin.setEnabled(false);
+        Vmax.setEnabled(false);
+        passiveMode.setChecked(false);
+        passiveMode.setEnabled(false);
+        Vmin.setEnabled(false);
+        minEnabled.setChecked(false);
+        minEnabled.setEnabled(false);
+        Vmax.setEnabled(false);
+        maxEnabled.setChecked(false);
+        maxEnabled.setEnabled(false);
+        //valveTxt = tr("Valve");
+        remoteDisTxt = tr("Temperature Sensor");
+        labelRemoteDisplay.setText(remoteDisTxt);
+        RemoteDisplay->acceptAll(true);
+    }
+    else
+    {
+        passiveMode.setEnabled(true);
+        minEnabled.setEnabled(true);
+        maxEnabled.setEnabled(true);
+        //valveTxt = tr("Valve");
+        remoteDisTxt = tr("Remote");
+        labelRemoteDisplay.setText(remoteDisTxt);
+        RemoteDisplay->acceptAll(false);
+    }
 }
 
+
+void ChauffageUnit::maxChanged(int value)
+{
+    Vmin.setMaximum(value);
+}
 
 
 
@@ -618,10 +653,26 @@ void ChauffageUnit::disconnectcombo()
 
 
 
+int ChauffageUnit::checkValveAutonomus()
+{
+    if (autonomousValve.isChecked()) {
+        onewiredevice *TargetTemp = VanneDevice->device();
+        onewiredevice *ReadTemp = RemoteDisplay->device();
+        if (!TargetTemp) return 0;
+        if (!ReadTemp) return 0;
+        if (ReadTemp->getMainValue() < TargetTemp->getMainValue()) return 1;
+    }
+    return 0;
+}
+
+
 void ChauffageUnit::setValue(int value)
 {
     int status = -1;
-	if (passiveMode.isChecked())
+    if (autonomousValve.isChecked()) {
+        status = Result;
+    }
+    else if (passiveMode.isChecked())
 	{
         if (logisdom::isNotNA(Result)) status = Result;
 	}
@@ -656,43 +707,13 @@ void ChauffageUnit::setValue(int value)
     onewiredevice *device = VanneDevice->device();
     if (device) device->assignMainValue(int(result));
     Status.setValue(int(result));
-    QString V = QString("%1%").arg(result);
+    QString V = QString("%1").arg(result);
+    if (autonomousValve.isChecked()) V.append(" °C"); else V.append("%");
     htmlBind->setParameter(valveTxt, V);
     htmlBind->setParameter(valveTxt, V);
     CalculButton.setText(V);
 }
 
-
-
-
-double ChauffageUnit::checkRemoteTarget(double Target)
-{
-    //parent->GenMsg(QString("checkRemoteTarget = %1").arg(Target));
-    //onewiredevice *deviceA = RemoteDisplay->device();
-    //QString RomID = RemoteDisplay->getRomID();
-    //onewiredevice *deviceC = parent->configwin->DeviceExist(RomID.left(17) + "C");
-    //if (!deviceA) return Target;
-    //if (!deviceC) return Target;
-    double remoteTarget = Target;
-    //int mode = deviceC->getMainValue();
-    //if (logisdom::isNotNA(mode) && (mode != ModeList.currentIndex()))
-    //{
-    //    disconnect(&ModeList, SIGNAL(currentIndexChanged(int)), this, SLOT(modeClick(int)));
-    //    ModeList.setCurrentIndex(mode);
-    //    setMode(mode);
-    //    connect(&ModeList, SIGNAL(currentIndexChanged(int)), this, SLOT(modeClick(int)));
-    //}
-    //else    // LogisDom drives remote
-    //{
-    //    if (Target == logisdom::NA) return Target;
-     //   if (deviceA->getMainValue() != Target)
-     //   {
-      //      deviceA->assignMainValue(Target);
-            //parent->GenMsg(QString("remoteValueAssigned = %1   /   assignMainValue %2").arg(remoteValueAssigned).arg(Target));
-      //  }
-    //}
-    return remoteTarget;
-}
 
 
 
@@ -760,23 +781,23 @@ int ChauffageUnit::process()
         case modeAuto :
                     if (parent->getProgEventArea()->isAutomatic())
                     {
-                        Target = checkRemoteTarget(parent->AddDaily->getActualValue(indexNow, indexPrevious));
+                        Target = parent->AddDaily->getActualValue(indexNow, indexPrevious);
                     }
                     else if (parent->getProgEventArea()->isConfort())
                     {
-                        Target = checkRemoteTarget(TConfort.value());
+                        Target = TConfort.value();
                     }
                     else if (parent->getProgEventArea()->isNuit())
                     {
-                        Target = checkRemoteTarget(TNuit.value());
+                        Target = TNuit.value();
                     }
                     else if (parent->getProgEventArea()->isEco())
                     {
-                        Target = checkRemoteTarget(TEco.value());
+                        Target = TEco.value();
                     }
                     else if (parent->getProgEventArea()->isUnfreeze())
                     {
-                        Target = checkRemoteTarget(7.5);
+                        Target = 7.5;
                     }
                     else
                     {
@@ -784,20 +805,19 @@ int ChauffageUnit::process()
                         if (!PrgName.isEmpty())
                         {
                             QTime T = parent->getProgEventArea()->getButtonTime();
-                            Target = checkRemoteTarget(parent->AddDaily->getValueAt(indexNow, indexPrevious, T));
+                            Target = parent->AddDaily->getValueAt(indexNow, indexPrevious, T);
                         }						}
                     Result = int(Formula->Calculate(Target)); break;
-        case modeConfort : Target = checkRemoteTarget(TConfort.value()); Result = int(Formula->Calculate(Target)); break;
-        case modeNuit : Target = checkRemoteTarget(TNuit.value()); Result = int(Formula->Calculate(Target)); break;
-        case modeEco : Target = checkRemoteTarget(TEco.value()); Result = int(Formula->Calculate(Target)); break;
-        case modeManuel :  Target = checkRemoteTarget(Consigne.value()); Result = int(Formula->Calculate(Target)); break;
-        case modeHorsGel : Target = checkRemoteTarget(7.5); Result = int(Formula->Calculate(Target)); break;
+        case modeConfort : Target = TConfort.value(); Result = int(Formula->Calculate(Target)); break;
+        case modeNuit : Target = TNuit.value(); Result = int(Formula->Calculate(Target)); break;
+        case modeEco : Target = TEco.value(); Result = int(Formula->Calculate(Target)); break;
+        case modeManuel :  Target = Consigne.value(); Result = int(Formula->Calculate(Target)); break;
+        case modeHorsGel : Target = 7.5; Result = int(Formula->Calculate(Target)); break;
         case modeOn : Result = 100; break;
         case modeOff : Result = 0; break;
     }
-
     if (vanneManual.isChecked()) Result = Status.value();
-	if (Result == logisdom::NA) return 0;
+    if ((Result == logisdom::NA) && !autonomousValve.isChecked()) return 0;
 	if (proportionalMinMax.isChecked())
 	{
 		int min = 0;
@@ -811,7 +831,8 @@ int ChauffageUnit::process()
 		if ((minEnabled.isChecked()) && Result <= Vmin.value()) Result = Vmin.value();
 		if ((maxEnabled.isChecked()) && Result >= Vmax.value()) Result = Vmax.value();
 	}
-	QString C = QString("%1 °C").arg(Target, 0, 'f', 1);
+    if (autonomousValve.isChecked()) { Result = Target; }
+    QString C = QString("%1 °C").arg(Target, 0, 'f', 1);
     if (logisdom::isNA(Target))
 	{
 		htmlBind->setParameter(targetTxt, cstr::toStr(cstr::NA));
@@ -837,11 +858,11 @@ int ChauffageUnit::process()
     }
     if (deviceA)
     {
-        if (logisdom::AreNotSame(deviceA->getMainValue(), Target) && (logisdom::isNotNA(Target))) deviceA->assignMainValue(Target);
+        if (logisdom::AreNotSame(deviceA->getMainValue(), Target) && (logisdom::isNotNA(Target))) { deviceA->assignMainValue(Target); }
         if (Formula->calcth->deviceList.count() > 0) ActualDevValue.setText(Formula->calcth->deviceList.at(0)->MainValueToStr());
     }
     master = false;
-	return Result;
+    return Result;
 }
 
 
@@ -1253,7 +1274,8 @@ void ChauffageScrollArea::deverrouiller()
 
 void ChauffageScrollArea::process()
 {
-	bool deviceOn = false;
+    //qDebug() << "Process";
+    bool deviceOn = false;
 	Process.setEnabled(false);
 	int total = 0;
 	bool Solar = false;
@@ -1262,8 +1284,8 @@ void ChauffageScrollArea::process()
 	for (int n=0; n<chauffage.count(); n++)
 	{
 		int r = chauffage[n]->process();
-		if (chauffage[n]->solarEnabled()) Solar = true;
-		if (!chauffage[n]->passiveMode.isChecked())
+        if (chauffage[n]->solarEnabled()) Solar = true;
+        if ((!chauffage[n]->passiveMode.isChecked()) && (!chauffage[n]->autonomousValve.isChecked()))
             if (logisdom::isNotNA(r)) total += r;
 		chauffageProcess.append(r);
 	}
@@ -1287,21 +1309,26 @@ void ChauffageScrollArea::process()
 			deviceOn = false;
 		}
 // recalculate if total < 100% to get a total of 100%
-		else if (total)
+        for (int n=0; n<chauffage.count(); n++) {
+            total += chauffage[n]->checkValveAutonomus();
+            chauffage[n]->setValue(-1);
+        }
+        if (total)
 		{
             int coef = 1;
             if (total) coef = 10000 / total;
-            if (total < 100) for (int n=0; n<chauffage.count(); n++) chauffage[n]->setValue(coef);
-            else
-            for (int n=0; n<chauffage.count(); n++) chauffage[n]->setValue(-1);
-			deviceOn = true;
-		}
-		else
+            if (total < 100) {
+                for (int n=0; n<chauffage.count(); n++) {
+                    if (!chauffage[n]->autonomousValve.isChecked()) chauffage[n]->setValue(coef); } }
+            else for (int n=0; n<chauffage.count(); n++) chauffage[n]->setValue(-1);
+            deviceOn = true;
+        }
+        else
 		{
 			deviceOn = false;
 		}
-	}
-	bool on = false;
+    }
+    bool on = false;
 // circulator on if tank T° is high enough
 	if (tankEnabler)
         if (tankEnabler->getMainValue() >= double(TankEnablerThreshold.value())) on = true;
@@ -1329,22 +1356,22 @@ void ChauffageScrollArea::process()
 	}
 	if (solarDischarge)
 	{
-                if (solarDischarge->getMainValue() >= double(SolarDischargeThreshold.value()))
+        if (solarDischarge->getMainValue() >= double(SolarDischargeThreshold.value()))
 		{
 			deviceOn = true;
 			on = true;
 		}
 	}
-	if (!parent->isRemoteMode())
+    if (!parent->isRemoteMode())
 		if (device)
 		{
 			if (on && deviceOn)
 				device->set_On();
 			else
 				device->set_Off();
-		}
-	if (on && deviceOn) labelCirculatorStatus.setText(cstr::toStr(cstr::ON));
-	else labelCirculatorStatus.setText(cstr::toStr(cstr::OFF));
+        }
+    if (on && deviceOn) labelCirculatorStatus.setText(cstr::toStr(cstr::ON));
+    else labelCirculatorStatus.setText(cstr::toStr(cstr::OFF));
 	Process.setEnabled(true);
 }
 
@@ -1383,8 +1410,9 @@ void  ChauffageScrollArea::SaveConfigStr(QString &str)
 		str += logisdom::saveformat("minEnabled", QString("%1").arg(chauffage[n]->maxEnabled.isChecked()));
 		str += logisdom::saveformat("Vmax", QString("%1").arg(chauffage[n]->Vmax.value()));
 		str += logisdom::saveformat("maxEnabled", QString("%1").arg(chauffage[n]->maxEnabled.isChecked()));
-		str += logisdom::saveformat("passiveState", QString("%1").arg(chauffage[n]->passiveMode.isChecked()));
-		str += logisdom::saveformat("proportionalMinMax", QString("%1").arg(chauffage[n]->proportionalMinMax.isChecked()));
+        str += logisdom::saveformat("passiveState", QString("%1").arg(chauffage[n]->passiveMode.isChecked()));
+        str += logisdom::saveformat("autonomusEnabled", QString("%1").arg(chauffage[n]->autonomousValve.isChecked()));
+        str += logisdom::saveformat("proportionalMinMax", QString("%1").arg(chauffage[n]->proportionalMinMax.isChecked()));
 		str += logisdom::saveformat("Mode", QString("%1").arg(chauffage[n]->mode));
 		str += logisdom::saveformat("Solar", QString("%1").arg(chauffage[n]->solarEnabled()));
 		str += logisdom::saveformat("BinderID", chauffage[n]->htmlBind->ID);
@@ -1441,6 +1469,8 @@ void ChauffageScrollArea::readconfigfile(const QString &configdata)
             if (ok && maxEnabled) newUnit->maxEnabled.setChecked(true);
             int passiveMode = logisdom::getvalue("passiveState", strsearch).toInt(&ok);
             if (ok && passiveMode) newUnit->passiveMode.setChecked(true);
+            int autonomusMode = logisdom::getvalue("autonomusEnabled", strsearch).toInt(&ok);
+            if (ok && autonomusMode) newUnit->autonomousValve.setChecked(true);
             int proportionalMinMax = logisdom::getvalue("proportionalMinMax", strsearch).toInt(&ok);
             if (ok && proportionalMinMax) newUnit->proportionalMinMax.setChecked(true);
 	}

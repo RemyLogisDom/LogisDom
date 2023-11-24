@@ -24,7 +24,6 @@
 
 
 #include "globalvar.h"
-#include "server.h"
 #include "inputdialog.h"
 #include "net1wire.h"
 #include "ds1825.h"

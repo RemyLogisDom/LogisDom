@@ -36,7 +36,7 @@
 #include "ui_stdui.h"
 #include "../plugins/interface.h"
 
-#include "stdint.h"
+//#include "stdint.h"
 
 Q_DECLARE_METATYPE(onewiredevice*)
 

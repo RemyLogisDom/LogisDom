@@ -174,8 +174,9 @@ double calcthread::calculate()
     deviceLoading = false;
 	stopRequest = false;
 	originalCalc = Calc;
-	bool webParseCalc = false;
-	bool webMailCalc = false;
+    bool webParseCalc = false;
+    QString calculation_str;
+    bool webMailCalc = false;
     bool webSmsCalc = false;
     if (lastCalc != Calc) lastCalc = Calc;
     if (Calc.contains("webparse")) webParseCalc = true;
@@ -195,6 +196,7 @@ search=<h4>Demain
 search=<span class="period">
 end=</span>
 filter=Jour non EJP;Jour EJP;séparateur point virgule
+calculation=*1000   pour faire un calcul supplémentaire
 Non Déterminé=0
 Blanc=1
 Bleu=2
@@ -242,7 +244,7 @@ Rouge=3
                 {
                     textBrowserResult += "\n" + tr("end defined");
                     while ((list.at(n).startsWith("replace=", Qt::CaseInsensitive)) && (n < count))
-                    { // replace= k_BY_000
+                    { // replace = k_BY_000
                         QString str;
                         str = list.at(n);
                         str = str.remove(0, 8);
@@ -266,6 +268,13 @@ Rouge=3
                         n++;
                     }
                     else textBrowserResult += "\n" + tr("no filter defined");
+                    if (list.at(n).startsWith("calculation=", Qt::CaseInsensitive))
+                    {
+                        calculation_str = list.at(n);
+                        calculation_str = calculation_str.remove(0, 12);
+                        textBrowserResult += "\ncalculation defined : " + calculation_str;
+                        n++;
+                    }
                     while (n < count) // get user values list, loop until "=" splitter is found
                     {
                         QString val = list.at(n);
@@ -368,6 +377,7 @@ Rouge=3
         {
             textBrowserResult += "\n" + tr("webpage not found, -1 value is returned, web pasring aborted");
         }
+        Calc.append(calculation_str);
         webParseCalcStr = Calc;
 	}
     if (webMailCalc)
@@ -790,7 +800,7 @@ QString calcthread::op2Function(int index)
     case WeekProgValue : str = tr("WeekProgValue(program name)"); break;
     case PID : str = tr("PID(Actual; setPoint; P; I; D)"); break;
     case DSP : str = tr("DSP(RomID; Pole; Gain; Polynome)"); break;
-    case webParse : str = tr("webparse\nwebpage=http://bleuciel.edf.com/abonnement-et-contrat/les-prix/les-prix-de-l-electricite/option-tempo/la-couleur-du-jour-2585.html&coe_i_id=2585\nsearch1=<h4>Demain\nsearch2=<span class=\"period\">\nend=</span>\nBlanc=(1)\nBleu=(2)\nRouge=(3)"); break;
+    case webParse : str = tr("webparse\nwebpage=http://bleuciel.edf.com/abonnement-et-contrat/les-prix/les-prix-de-l-electricite/option-tempo/la-couleur-du-jour-2585.html&coe_i_id=2585\nsearch1=<h4>Demain\nsearch2=<span class=\"period\">\nend=</span>\nfilter=Jour EJP\ncalculation=*1000\nBlanc=(1)\nBleu=(2)\nRouge=(3)"); break;
     case webMail : str = tr("webmail\nmailAddress=machin@orange.fr\nmailAddress=toto@orange.fr\nmailAddress=bidule@orange.fr\ntextSubject=Alarme Temprature PAC\ntextMail=file.txt\nmailAction=sendifnullr/sendifnotnullr/sendifna\nformula=T_PAC < 1"); break;
     case webSms : str = tr("websms\nsmsHttpRequest=https://smsapi.free-mobile.fr/sendmsg?user=1234567890&pass=xxxxxxxxxx&msg=\ntextSMS=file.txt or any text\nsmsAction=sendifnullr/sendifnotnullr/sendifna\nformula=T_PAC < 1"); break;
     }

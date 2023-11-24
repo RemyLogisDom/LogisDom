@@ -152,7 +152,8 @@ void IconeArea::setValue()
     for (int index=0; index<IconList.count(); index++)
     {
         onewiredevice *device = parent->configwin->DeviceExist(IconList.at(index)->romid);
-        if (IconList.at(index)->highlighted or IconList.at(index)->Thighlighted or IconList.at(index)->Vhighlighted) return;
+        // line remove 19-11-2023
+        //if (IconList.at(index)->highlighted or IconList.at(index)->Thighlighted or IconList.at(index)->Vhighlighted) return;
         if (device) IconList.at(index)->setvalue(device); else IconList.at(index)->setvalue();
     }
 }

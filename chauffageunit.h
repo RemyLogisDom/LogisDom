@@ -109,12 +109,12 @@ enum modeChauffageUnit{ modeAuto, modeOn, modeOff, modeConfort, modeNuit, modeEc
 	QDoubleSpinBox TConfort;
     QDoubleSpinBox TNuit;
     QDoubleSpinBox TEco;
-    QCheckBox minEnabled, maxEnabled, passiveMode, proportionalMinMax;
+    QCheckBox minEnabled, maxEnabled, passiveMode, autonomousValve, proportionalMinMax;
 	QSpinBox Vmin, Vmax;
 	int mode;
 	QString modeToStr(int Mode);
     void setValue(int value);
-    double checkRemoteTarget(double Target);
+    int checkValveAutonomus();
 private:
 	QList <onewiredevice*> CaptTempPtArray;
 	QList <onewiredevice*> VannePtArray;
@@ -139,8 +139,9 @@ private slots:
     void MinEnChanged(int state);
 	void minChanged(int value);
 	void MaxEnChanged(int state);
-	void maxChanged(int value);
-	void solarChanged(int);
+    void maxChanged(int value);
+    void AutonomusChanged(int state);
+    void solarChanged(int);
     void startupdate();
 signals:
 	void setupClick(QWidget*);

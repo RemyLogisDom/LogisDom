@@ -1,5 +1,5 @@
-﻿    Version = "2.310 (Qt " QT_VERSION_STR ")";
-    VersionDate = "Octobre 2023";
+﻿    Version = "2.312 (Qt " QT_VERSION_STR ")";
+    VersionDate = "Decembre 2023";
     VersionHistory = " \
 a faire\
 Value at startup for enocean switch\
@@ -8,6 +8,8 @@ Nombre de ligne Max apres recompilation tableau\
 format heure data file UTC\
 calcul des capteur virtuel au démarrage, reprendre la dernière valeur enregistrée si possible\
 bad link si pas de capteur selectionné si on met seulement mode de déclenchement en lien\
+    Version 2.311\
+        - Ajout tag calculation= pour webparse\
     Version 2.310\
         - Ajout IP bannishement for server\
         - Correctif fuite memoire connection.cpp ligne 65\

@@ -112,6 +112,12 @@ void devchooser::setStyleSheet(QString style)
 }
 
 
+void devchooser::acceptAll(bool state)
+{
+    acceptAllDevices = state;
+}
+
+
 void devchooser::delClick()
 {
     emit(deleteRequest(this));
@@ -124,16 +130,15 @@ void devchooser::chooseClick()
     devfinder *devFinder;
     devFinder = new devfinder(parent);
     devFinder->originalDevice = device;
-    foreach (QString str, AcceptedFamily) qDebug() << str;
-
+    //foreach (QString str, AcceptedFamily) qDebug() << str;
     foreach (onewiredevice* dev, parent->configwin->devicePtArray)
     {
         if (dev->plugin_interface) {
-            if (dev->plugin_interface->acceptCommand(dev->getromid()) && (dev->htmlBindControler == nullptr))
+            if ((dev->plugin_interface->acceptCommand(dev->getromid()) && (dev->htmlBindControler == nullptr)) or acceptAllDevices)
                 devFinder->devicesList.append(dev);
         }
-        if ((AcceptedFamily.contains(dev->getfamily()) && (dev->htmlBindControler == nullptr)) or (AcceptedFamily.isEmpty()))
-            devFinder->devicesList.append(dev);
+        if ((AcceptedFamily.contains(dev->getfamily()) && (dev->htmlBindControler == nullptr)) or (AcceptedFamily.isEmpty()) or acceptAllDevices)
+            if (!devFinder->devicesList.contains(dev)) devFinder->devicesList.append(dev);
     }
     if (devFinder->devicesList.count() == 0)
     {

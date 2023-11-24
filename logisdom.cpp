@@ -2738,10 +2738,23 @@ void logisdom::iconAddOne(bool)
 void logisdom::newPluginDevice(LogisDomInterface *interface, QString RomID)
 {
     onewiredevice *device = configwin->DeviceExist(RomID);
+    bool showDevice = false;
+    // ! is to avoid displaying all devices loaded from config file, device will
+    // be displayed only at the moment when the user create it
+    // interface can give a name with the RomID
+    QString Name;
+    if (RomID.contains(":")) {
+        QStringList list = RomID.split(":");
+            RomID = list.first();
+            Name = list.last();
+    }
+    if (RomID.endsWith("!")) { RomID.chop(1); showDevice = true; }
     if (!device) device = configwin->NewPluginDevice(RomID, interface);
+    if (!Name.isEmpty()) device->setname(Name);
     showPalette();
-    //if (device) setPalette(&device->setup);
+    if (showDevice) setPalette(&device->setup);
 }
+
 
 
 void logisdom::pluginDeviceSelected(QString RomID)

@@ -54,9 +54,11 @@ public:
 	QString getName();
 	onewiredevice *device();
 	void setStyleSheet(QString style);
+    void acceptAll(bool);
 private:
 	htmlBinder *htmlBindControler;
 	QString RomID;
+    bool acceptAllDevices = false;
 public slots:
     void DeviceConfigChanged(onewiredevice*);
     void newDeviceAdded(onewiredevice*);
